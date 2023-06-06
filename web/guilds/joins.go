@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"encoding/json"
 	"github.com/disgoorg/snowflake/v2"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,7 +26,51 @@ func JoinMessage(c *gin.Context) {
 			"error": "failed parsing guild id",
 		})
 	}
-	c.String(200, string(mType)+id.String())
+	Chanid, err := snowflake.Parse(c.Param("channel_id"))
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "failed parsing guild id",
+		})
+	}
+	guildmsg := &GuildMessage{
+		ID:        id.String(),
+		JsonData:  "",
+		ChannelID: Chanid.String(),
+		Type:      mType,
+	}
+
+	data, _ := guildmsg.FindInMongo()
+	if data == nil {
+		_, err := guildmsg.CreateInMongo()
+		if err != nil {
+			c.JSON(400, err)
+			return
+		}
+	} else {
+		_, err := guildmsg.UpdateInMongo()
+		if err != nil {
+			c.JSON(400, err)
+			return
+		}
+	}
+	//fmt.Println(data["id"] == "")
+	//if data["id"] == "" {
+	//	d, err := guildmsg.CreateInMongo()
+	//	if err != nil {
+	//		c.JSON(400, err)
+	//		return
+	//	}
+	//	fmt.Println(d)
+	//	//create new message
+	//} else {
+	//	_, err := guildmsg.UpdateInMongo()
+	//	if err != nil {
+	//		c.JSON(400, err)
+	//		return
+	//	}
+	//
+	//}
+	c.String(200, "lol")
 
 }
 func MsgType(s string) (MessageTypes, bool) {
@@ -51,34 +96,38 @@ type GuildMessage struct {
 	Type      MessageTypes `json:"type,omitempty" bson:"type,omitempty"`
 }
 
-func (msg *GuildMessage) Save() error {
-	data, err := msg.FindInMongo()
-	if err != nil {
-		return err
-	}
-	if data["id"] == "" {
-		_, err := msg.CreateInMongo()
-		return err
-
-		//create new message
-	} else {
-		_, err := msg.UpdateInMongo()
-		return err
-	}
-
-}
+// func (msg *GuildMessage) Save() error {
+//
+// }
 func (msg *GuildMessage) UpdateInMongo() (*mongo.UpdateResult, error) {
-	return mongof.UpdateOne(msg, bson.M{
-		"id":         msg.ID,
-		"channel_id": msg.ChannelID,
+	return mongof.UpdateOne(bson.M{
+		"$set": msg.ToMap(),
+	}, bson.M{
+
+		"id":   msg.ID,
+		"type": msg.Type,
 	}, options.Update(), bot1.MongoDatabase, "messages")
 }
 func (msg *GuildMessage) CreateInMongo() (*mongo.InsertOneResult, error) {
-	return mongof.InsertOne(msg, options.InsertOne(), bot1.MongoDatabase, "messages")
+	return mongof.InsertOne(msg.ToMap(), options.InsertOne(), bot1.MongoDatabase, "messages")
 }
 func (msg *GuildMessage) FindInMongo() (bson.M, error) {
 	return mongof.FindOne(bson.M{
-		"id":         msg.ID,
-		"channel_id": msg.ChannelID,
+		"id":   msg.ID,
+		"type": msg.Type,
 	}, options.FindOne(), bot1.MongoDatabase, "messages")
+}
+func (msg *GuildMessage) ToMap() bson.M {
+	result := make(map[string]interface{})
+
+	jsonData, err := json.Marshal(msg)
+	if err != nil {
+		return nil
+	}
+
+	err = json.Unmarshal(jsonData, &result)
+	if err != nil {
+		return nil
+	}
+	return result
 }

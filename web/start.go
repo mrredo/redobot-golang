@@ -24,7 +24,7 @@ func Start(client bot.Client) *gin.Engine {
 	api.GET("/guilds", func(c *gin.Context) {
 		guilds.GetGuilds(c)
 	})
-	api.PUT("/guilds/:id/:type")
+	api.PUT("/guilds/:id/:channel_id/:type", guilds.JoinMessage)
 	r.GET("/addbot", auth.AddBot)
 	api.GET("/user", func(c *gin.Context) {
 		user.GetUser(c)
