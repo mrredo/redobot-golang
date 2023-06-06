@@ -30,7 +30,7 @@ export default function NavBar() {
           <Nav className="me-auto">
             <Nav.Link className="text-white" href="#home">About</Nav.Link>
             <Nav.Link className="text-white" href="#link">Documentations</Nav.Link>
-            {user.id != ""? (
+            {!user.error? (
                 <NavDropdown title={
                 <span className="text-white">
                   {/*<img className="rounded-full" width="30" src={user.avatar.url} alt="profile picture"/>*/}

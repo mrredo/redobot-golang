@@ -24,12 +24,16 @@ export default function Guilds() {
             "popup",
             "width=400,height=600"
         );
-        var popupTick = setInterval(function() {
-            if (win?.closed) {
-                window.location.href =  `/guilds/${guildid}/info`;
-            }
-        }, 500);
+        win?.focus();
+        win?.addEventListener("unload", function (){
 
+
+        })
+        win?.window.addEventListener('load', () => {
+            win?.window.addEventListener('unload', () => {
+                window.location.href =  `/guilds/${guildid}/info`;
+            });
+        });
 
     }
 
@@ -59,7 +63,7 @@ export default function Guilds() {
                     {guild.botInServer ? (
                         <a
                             href={`/guilds/${guild.id}/info`}
-                            className="transition-all text-gray-300 rounded-lg hover:rounded-[1rem] no-underline text-2xl border-gray-800 mt-1 mb-1 border-4 p-2 hover:no-underline duration-300 hover:bg-gray-800 hover:text-white hover:shadow-2xl"
+                            className="transition-all text-gray-300 rounded-lg hover:rounded-[1rem] no-underline text-2xl border-gray-800 mt-1 mb-1 border-4 p-2 hover:no-underline duration-300 hover:bg-gray-800 bg-green-5000 hover:text-white hover:shadow-2xl"
                         >
                             configure
                         </a>

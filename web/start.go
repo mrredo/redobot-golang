@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/discord"
 	"github.com/gin-contrib/sessions"
@@ -9,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"main/bot1"
 	"main/web/auth"
+	"main/web/guilds"
+	"main/web/user"
 	"net/http"
 )
 
@@ -19,17 +20,14 @@ var (
 func Start(client bot.Client) *gin.Engine {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("token", store))
-
-	r.GET("/", func(c *gin.Context) {
-		session := sessions.Default(c)
-		cookie := session.Get("token")
-		if cookie != nil {
-			var user *discord.OAuth2User
-			us, _ := bot1.AuthClient.GetUser(bot1.Sessions[cookie.(string)])
-			user = us
-			fmt.Println(11)
-			c.String(200, *user.AvatarURL())
-		}
+	api := r.Group("/api/")
+	api.GET("/guilds", func(c *gin.Context) {
+		guilds.GetGuilds(c)
+	})
+	api.PUT("/guilds/:id/:type")
+	r.GET("/addbot", auth.AddBot)
+	api.GET("/user", func(c *gin.Context) {
+		user.GetUser(c)
 	})
 	auth1 := r.Group("/auth/")
 	auth1.GET("/login", func(c *gin.Context) {

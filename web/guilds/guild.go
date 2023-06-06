@@ -1,7 +1,6 @@
 package guilds
 
 import (
-	"fmt"
 	"github.com/disgoorg/disgo/discord"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -20,7 +19,6 @@ func GetGuilds(c *gin.Context) {
 			if !v.Permissions.Has(discord.PermissionManageGuild) {
 				continue
 			}
-			fmt.Println(v.Icon)
 			guilds1 = append(guilds1, Guild{
 				Id:          v.ID.String(),
 				Name:        v.Name,

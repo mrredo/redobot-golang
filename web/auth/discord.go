@@ -24,10 +24,15 @@ func AuthDiscord(c *gin.Context) {
 			c.String(500, "Error starting session")
 			return
 		}
-		fmt.Println(code)
 		bot1.Sessions[identifier] = session
 		session1.Set("token", identifier)
-		session1.Save()
+		err1 := session1.Save()
+		if err1 != nil {
+			fmt.Println(err)
+			c.String(404, "Failed saving session")
+			return
+		}
+
 	}
 	c.Redirect(http.StatusTemporaryRedirect, "/")
 }

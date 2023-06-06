@@ -25,6 +25,8 @@ export default function GuildMessages() {
             <NavBar />
             <div className="text-center pb-2 border-b-white text-white text-5xl mt-16 mb-3 sm:text-[2.7rem]">
                 Edit redobot responses
+                <br/>
+                <a target="_blank" href={`https://glitchii.github.io/embedbuilder/?data=JTdCJTdE`}>Embed builder</a>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-1 m-3">
               <div className="joins border-white border-2">
@@ -33,9 +35,9 @@ export default function GuildMessages() {
                 </h1>
                 <div className="content text-white text-center">
                   <div className="title">
-                    Title 
+                    Embed JSON data
                     <br />
-                    <input className=" m-2" />
+                    <textarea className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
                   </div>
                 </div>
               </div>
