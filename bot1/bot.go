@@ -5,6 +5,7 @@ import (
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/cache"
+	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/events"
 	"github.com/disgoorg/disgo/gateway"
 	"github.com/disgoorg/disgo/oauth2"
@@ -14,6 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 	"os"
+	"time"
 )
 
 var (
@@ -26,7 +28,15 @@ var (
 	BotClient     bot.Client
 	MongoClient   *mongo.Client
 	MongoDatabase *mongo.Database
-	Sessions      = map[string]oauth2.Session{}
+	Sessions      = map[string]oauth2.Session{
+		"LZMKhogeaugjENjYqssYmAdUdBSkgrme": oauth2.Session{
+			AccessToken:  "0od8WvRzyeVBZtUUUvZiiNNlGwOZxu ",
+			RefreshToken: "ycFRqjlTXxIvYGel1YdT9FxaGXfw2o",
+			Scopes:       []discord.OAuth2Scope{discord.OAuth2ScopeGuilds, discord.OAuth2ScopeIdentify},
+			TokenType:    "Bearer",
+			Expiration:   time.Time{},
+		},
+	}
 )
 
 func StrToSnowflake(id string) snowflake.ID {
@@ -46,7 +56,7 @@ func Start() bot.Client {
 			gateway.IntentMessageContent,
 		)),
 		bot.WithCacheConfigOpts(
-			cache.WithCaches(cache.FlagGuilds),
+			cache.WithCaches(cache.FlagGuilds, cache.FlagChannels, cache.FlagMembers),
 		),
 		bot.WithEventListenerFunc(func(e *events.Ready) {
 

@@ -12,6 +12,13 @@ import (
 )
 
 func JoinMessage(c *gin.Context) {
+	/*
+
+		CHECK IF USER HAS AUTHENTICATED
+
+
+	*/
+
 	mType, b := MsgType(c.Param("type"))
 
 	if !b {
@@ -26,12 +33,42 @@ func JoinMessage(c *gin.Context) {
 			"error": "failed parsing guild id",
 		})
 	}
+	_, ok := bot1.BotClient.Caches().Guild(id)
+	if !ok {
+		c.JSON(400, gin.H{
+			"error": "bot is not in this guild",
+		})
+		return
+
+	}
 	Chanid, err := snowflake.Parse(c.Param("channel_id"))
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "failed parsing guild id",
 		})
 	}
+	if channel, ok := bot1.BotClient.Caches().Channel(Chanid); !ok {
+		if channel.GuildID().String() != id.String() {
+			c.JSON(400, gin.H{
+				"error": "channel is not part of the guild",
+			})
+			return
+		}
+		c.JSON(400, gin.H{
+			"error": "bot doesnt have access to this channel",
+		})
+		return
+
+	}
+	messageData := make(map[string]any)
+	if err := c.BindJSON(&messageData); err != nil {
+		c.JSON(400, gin.H{
+			"error": "failed parsing json data",
+		})
+		return
+	}
+	//convert message data to discord message and back then strip the data
+	StripDiscordMessageOfUnwantedInformation(messageData)
 	guildmsg := &GuildMessage{
 		ID:        id.String(),
 		JsonData:  "",

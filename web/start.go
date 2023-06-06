@@ -21,6 +21,19 @@ func Start(client bot.Client) *gin.Engine {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("token", store))
 	api := r.Group("/api/")
+	api.Use(func(c *gin.Context) {
+		session := sessions.Default(c)
+		tok := session.Get("token")
+		if tok != nil {
+			if _, ok := bot1.Sessions[tok.(string)]; !ok {
+				c.JSON(401, gin.H{
+					"error": "Authorization required",
+				})
+				return
+			}
+		}
+		c.Next()
+	})
 	api.GET("/guilds", func(c *gin.Context) {
 		guilds.GetGuilds(c)
 	})
