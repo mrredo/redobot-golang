@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"main/config"
 	"main/web/auth"
+	"main/web/channel"
 	"main/web/guilds"
 	"main/web/user"
 	"net/http"
@@ -34,10 +35,18 @@ func Start(client bot.Client) *gin.Engine {
 		}
 		c.Next()
 	})
+	/*
+
+		when user messgaes load their current data and add enabled to front end so user can disable and enable it
+		/api/guilds/:id/:channel_id/:type GET
+		get current data
+	*/
+
+	api.GET("/guilds/:guild_id/channels", channel.GetChannels)
 	api.GET("/guilds", func(c *gin.Context) {
 		guilds.GetGuilds(c)
 	})
-	api.PUT("/guilds/:id/:channel_id/:type", guilds.JoinMessage)
+	api.PUT("/guilds/:id/:channel_id/:type", guilds.JoinMessagePUT)
 	r.GET("/addbot", auth.AddBot)
 	api.GET("/user", func(c *gin.Context) {
 		user.GetUser(c)

@@ -5,23 +5,31 @@ export default function GuildMessages() {
     const { id } = useParams();
     const [guild, setGuild] = useState({}) as any;
     const [join, setJoin] = useState({}) as any;
+    const [channels, setChannel] = useState([]) as any;
     useEffect(() => {
-        const fetchData = async () => {
-        fetch(`/api/guilds/${id}`)
-          .then(response => response.json())
-          .then(data => setGuild(data));
+        // const fetchData = async () => {
+        // fetch(`/api/guilds/${id}`)
+        //   .then(response => response.json())
+        //   .then(data => setGuild(data));
+        // };
+        // fetchData();
+        // const fetchJoin = async () => {
+        //   fetch(`/api/guilds/${id}/messages/join/`)
+        //     .then(response => response.json())
+        //     .then(data => setJoin(data));
+        //   };
+        //   fetchJoin();
+        const fetchChannels = async () => {
+            fetch(`/api/guilds/${id}/channels?type=text`)
+                .then(response => response.json())
+                .then(data => setChannel(data));
         };
-        fetchData();
-        const fetchJoin = async () => {
-          fetch(`/api/guilds/${id}/messages/join/`)
-            .then(response => response.json())
-            .then(data => setGuild(data));
-          };
-          fetchJoin();
+        fetchChannels();
       }, []);
-    function SendDataMessage(guildid: string, channelid: string) {
+    function SendDataMessage() {
        let  textb = document.getElementById("jsondata")
-        fetch(`http://localhost:4000/api/guilds/${guildid}/${channelid}`, {
+        let selectchan = document.getElementById("channels")
+        fetch(`/api/guilds/${id}/${(selectchan as HTMLSelectElement).value}/join`, {
             method: "PUT",
             credentials: "include",
             body: (textb as HTMLTextAreaElement).value
@@ -41,13 +49,23 @@ export default function GuildMessages() {
                   <span className="">Join messages</span>
                 </h1>
                 <div className="content text-white text-center">
+
                   <div className="title">
+                      Select channel where to send message
+                      <br/>
+                      <select id={"channels"} className="text-black">
+                          {channels.length != 0? channels.map((channel: any) => (
+                              <option value={channel.id}>{channel.name}</option>
+                          )) : ""}
+                      </select>
+                      <br/>
                     Embed JSON data
                     <br />
-                      <select className="text-black">
-                          <option value={"channel"}>Channel</option>
-                      </select>
+
+
                     <textarea id={"jsondata"} className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
+                      <br/>
+                      <button onClick={() => SendDataMessage()} className="text-3xl border-2 m-2 p-2 rounded-lg hover:rounded-xl hover:bg-green-700 transition-all duration-300" >Save!</button>
                   </div>
                 </div>
               </div>

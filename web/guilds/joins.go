@@ -11,7 +11,42 @@ import (
 	"main/structs"
 )
 
-func JoinMessage(c *gin.Context) {
+func GetMessage(c *gin.Context) {
+	mType, b := structs.MsgType(c.Param("type"))
+
+	if !b {
+		c.JSON(400, gin.H{
+			"error": "invalid message type",
+		})
+		return
+	}
+	id, err := snowflake.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "failed parsing guild id",
+		})
+	}
+	_, ok := config.BotClient.Caches().Guild(id)
+	if !ok {
+		c.JSON(400, gin.H{
+			"error": "bot is not in this guild",
+		})
+		return
+
+	}
+	Chanid, err := snowflake.Parse(c.Param("channel_id"))
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "failed parsing channel id",
+		})
+	}
+	/*
+		check if user has access to this information by checking if hes in the guild and has manage server perm
+
+	*/
+	c.JSON(200, Chanid)
+}
+func JoinMessagePUT(c *gin.Context) {
 	/*
 
 		CHECK IF USER HAS AUTHENTICATED
