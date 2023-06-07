@@ -41,7 +41,7 @@ func Start(client bot.Client) *gin.Engine {
 		/api/guilds/:id/:channel_id/:type GET
 		get current data
 	*/
-
+	api.GET("/guilds/messages/:id/:type", guilds.GetMessage)
 	api.GET("/guilds/:guild_id/channels", channel.GetChannels)
 	api.GET("/guilds", func(c *gin.Context) {
 		guilds.GetGuilds(c)

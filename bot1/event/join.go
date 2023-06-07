@@ -45,6 +45,8 @@ func UserJoin(e *events.GuildMemberJoin) {
 		cons.JoinDatePlaceholder:           mem.JoinedAt.Second(),
 		cons.ServerIconPlaceholder:         guild.Icon, //could throw an error if guild doest have a icon
 		cons.UserIconPlaceholder:           user.Avatar,
+		cons.MemberCountCurrent:            guild.MemberCount,
+		cons.MemberCountPrevious:           guild.MemberCount - 1,
 	}
 	newJsonFilledData := cons.FindPlaceHoldersAndReplace(decoded, placeholder)
 	creator := discord.MessageCreate{}
@@ -63,6 +65,9 @@ func UserJoin(e *events.GuildMemberJoin) {
 		return
 	}
 
+	if !msg.Enabled {
+		return
+	}
 	_, err = e.Client().Rest().CreateMessage(chanid, creator)
 	if err != nil {
 		return

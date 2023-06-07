@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/disgoorg/disgo/discord"
+	"github.com/disgoorg/disgo/oauth2"
 	"github.com/disgoorg/snowflake/v2"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"main/config"
 	"main/functions"
@@ -25,6 +27,7 @@ func GetMessage(c *gin.Context) {
 		c.JSON(400, gin.H{
 			"error": "failed parsing guild id",
 		})
+		return
 	}
 	_, ok := config.BotClient.Caches().Guild(id)
 	if !ok {
@@ -34,26 +37,40 @@ func GetMessage(c *gin.Context) {
 		return
 
 	}
-	Chanid, err := snowflake.Parse(c.Param("channel_id"))
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "failed parsing channel id",
-		})
+	guilds, _ := config.AuthClient.GetGuilds(config.Sessions[sessions.Default(c).Get("token").(string)])
+	var good bool
+	for _, guild := range guilds {
+		if guild.Permissions.Has(discord.PermissionManageGuild) && guild.ID.String() == id.String() {
+			good = true
+		}
 	}
+	if !good {
+		c.JSON(400, gin.H{
+			"error": "either you dont have MANAGE_SERVER permission or you are not in this guild",
+		})
+		return
+	}
+	msg := &structs.GuildMessage{ID: id.String(), Type: mType}
+	msg.FetchData()
+
 	/*
 		check if user has access to this information by checking if hes in the guild and has manage server perm
 
 	*/
-	c.JSON(200, Chanid)
+	msg.JsonData, _ = functions.Base64Decode(msg.JsonData)
+	c.JSON(200, msg)
+}
+func UserIsInServerAndHasPerms(session oauth2.Session, supposedGuildId snowflake.ID) {
+
 }
 func JoinMessagePUT(c *gin.Context) {
-	/*
 
-		CHECK IF USER HAS AUTHENTICATED
-
-
-	*/
-
+	if sessions.Default(c).Get("token") == nil {
+		c.JSON(401, gin.H{
+			"error": "not logged in",
+		})
+		return
+	}
 	mType, b := structs.MsgType(c.Param("type"))
 
 	if !b {
@@ -76,6 +93,20 @@ func JoinMessagePUT(c *gin.Context) {
 		return
 
 	}
+	guilds, _ := config.AuthClient.GetGuilds(config.Sessions[sessions.Default(c).Get("token").(string)])
+	var good bool
+	for _, guild := range guilds {
+		if guild.Permissions.Has(discord.PermissionManageGuild) && guild.ID.String() == id.String() {
+			good = true
+		}
+	}
+	if !good {
+		c.JSON(400, gin.H{
+			"error": "either you dont have MANAGE_SERVER permission or you are not in this guild",
+		})
+		return
+	}
+
 	Chanid, err := snowflake.Parse(c.Param("channel_id"))
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -144,6 +175,7 @@ func JoinMessagePUT(c *gin.Context) {
 			return
 		}
 	} else {
+
 		_, err := guildmsg.UpdateInMongo()
 		if err != nil {
 			c.JSON(400, err)

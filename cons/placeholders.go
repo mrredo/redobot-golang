@@ -17,6 +17,8 @@ const (
 	JoinDatePlaceholder           Placeholder = "{joindate}"
 	ServerIconPlaceholder         Placeholder = "{servericon}"
 	UserIconPlaceholder           Placeholder = "{usericon}"
+	MemberCountCurrent            Placeholder = "{currentmembers}"
+	MemberCountPrevious           Placeholder = "{lastmembers}"
 )
 
 var (

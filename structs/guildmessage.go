@@ -30,7 +30,7 @@ type GuildMessage struct {
 	JsonData  string       `json:"json_data,omitempty" bson:"json_data,omitempty"`
 	ChannelID string       `json:"channel_id,omitempty" bson:"channel_id,omitempty"`
 	Type      MessageTypes `json:"type,omitempty" bson:"type,omitempty"`
-	Enabled   bool         `json:"enabled,omitempty" bson:"enabled,omitempty"`
+	Enabled   bool         `json:"enabled" bson:"enabled,omitempty"`
 }
 
 // func (msg *GuildMessage) Save() error {
@@ -40,7 +40,6 @@ func (msg *GuildMessage) UpdateInMongo() (*mongo.UpdateResult, error) {
 	return mongof.UpdateOne(bson.M{
 		"$set": msg.ToMap(),
 	}, bson.M{
-
 		"id":   msg.ID,
 		"type": msg.Type,
 	}, options.Update(), config.MongoDatabase, "messages")
