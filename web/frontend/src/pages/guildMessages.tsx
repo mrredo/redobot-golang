@@ -19,7 +19,14 @@ export default function GuildMessages() {
           };
           fetchJoin();
       }, []);
-    
+    function SendDataMessage(guildid: string, channelid: string) {
+       let  textb = document.getElementById("jsondata")
+        fetch(`http://localhost:4000/api/guilds/${guildid}/${channelid}`, {
+            method: "PUT",
+            credentials: "include",
+            body: (textb as HTMLTextAreaElement).value
+        })
+    }
     return(
         <div className="main">
             <NavBar />
@@ -37,7 +44,10 @@ export default function GuildMessages() {
                   <div className="title">
                     Embed JSON data
                     <br />
-                    <textarea className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
+                      <select className="text-black">
+                          <option value={"channel"}>Channel</option>
+                      </select>
+                    <textarea id={"jsondata"} className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
                   </div>
                 </div>
               </div>

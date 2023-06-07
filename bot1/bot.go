@@ -31,6 +31,8 @@ func Start() bot.Client {
 			gateway.IntentGuildMessages,
 			gateway.IntentDirectMessages,
 			gateway.IntentMessageContent,
+			gateway.IntentGuildMembers,
+			gateway.IntentsAll,
 		)),
 		bot.WithCacheConfigOpts(
 			cache.WithCaches(cache.FlagGuilds, cache.FlagChannels, cache.FlagMembers),

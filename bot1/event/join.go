@@ -14,15 +14,19 @@ import (
 func UserJoin(e *events.GuildMemberJoin) {
 	user := e.Member.User
 	mem := e.Member
-	guild, ok := e.Client().Caches().Guild(e.GuildID)
-	if !ok {
+
+	guild, err := e.Client().Rest().GetGuild(e.GuildID, true)
+	if err != nil {
 		return
 	}
 	owner, err := e.Client().Rest().GetMember(e.GuildID, guild.OwnerID)
 	if err != nil {
 		return
 	}
-	msg := &structs.GuildMessage{}
+	msg := &structs.GuildMessage{
+		ID:   guild.ID.String(),
+		Type: structs.JOIN,
+	}
 	if err := msg.FetchData(); err != nil {
 		return
 	}
@@ -30,6 +34,7 @@ func UserJoin(e *events.GuildMemberJoin) {
 	if err != nil {
 		return
 	}
+
 	var placeholder = map[cons.Placeholder]any{
 		cons.UserPlaceholder:               e.Member.User.Username,
 		cons.UserMentionPlaceholder:        fmt.Sprintf("<@%s>", e.Member.User.ID.String()),
@@ -38,23 +43,27 @@ func UserJoin(e *events.GuildMemberJoin) {
 		cons.ServerOwnerPlaceholder:        owner.User.Username,
 		cons.ServerOwnerMentionPlaceholder: fmt.Sprintf("<@%s>", owner.User.ID.String()),
 		cons.JoinDatePlaceholder:           mem.JoinedAt.Second(),
-		cons.ServerIconPlaceholder:         *guild.IconURL(), //could throw an error if guild doest have a icon
-		cons.UserIconPlaceholder:           *user.AvatarURL(),
+		cons.ServerIconPlaceholder:         guild.Icon, //could throw an error if guild doest have a icon
+		cons.UserIconPlaceholder:           user.Avatar,
 	}
 	newJsonFilledData := cons.FindPlaceHoldersAndReplace(decoded, placeholder)
-	creator := discord.NewMessageCreateBuilder()
-	b, err := json.Marshal(newJsonFilledData)
-	if err != nil {
-		return
-	}
-	if err := json.Unmarshal(b, &creator); err != nil {
-		return
-	}
+	creator := discord.MessageCreate{}
+	//b, err := json.Marshal(newJsonFilledData)
+	//if err != nil {
+	//	return
+	//}
+	//fmt.Println(5)
 	chanid, err := snowflake.Parse(msg.ChannelID)
 	if err != nil {
 		return
 	}
-	_, err = e.Client().Rest().CreateMessage(chanid, creator.Build())
+	if err := json.Unmarshal([]byte(newJsonFilledData), &creator); err != nil {
+
+		_, err = e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for join messages, visit dashboard to fix.").Build())
+		return
+	}
+
+	_, err = e.Client().Rest().CreateMessage(chanid, creator)
 	if err != nil {
 		return
 	}
