@@ -4,17 +4,17 @@ import (
 	"github.com/disgoorg/disgo/discord"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"main/bot1"
+	"main/config"
 )
 
 func GetGuilds(c *gin.Context) {
 	session := sessions.Default(c)
 	if session.Get("token") != nil {
-		guilds, err := bot1.AuthClient.GetGuilds(bot1.Sessions[session.Get("token").(string)])
+		guilds, err := config.AuthClient.GetGuilds(config.Sessions[session.Get("token").(string)])
 		guilds1 := []Guild{}
 
 		for _, v := range guilds {
-			_, is := bot1.BotClient.Caches().Guild(v.ID)
+			_, is := config.BotClient.Caches().Guild(v.ID)
 
 			if !v.Permissions.Has(discord.PermissionManageGuild) {
 				continue

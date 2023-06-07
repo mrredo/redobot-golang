@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"main/bot1"
+	"main/config"
 	"main/functions"
 	"net/http"
 	//"github.com/imroc/req/v3"
@@ -18,13 +18,13 @@ func AuthDiscord(c *gin.Context) {
 	)
 	if code != "" && state != "" {
 		identifier := functions.RandStr(32)
-		session, _, err := bot1.AuthClient.StartSession(code, state)
+		session, _, err := config.AuthClient.StartSession(code, state)
 		if err != nil {
 			fmt.Println(err)
 			c.String(500, "Error starting session")
 			return
 		}
-		bot1.Sessions[identifier] = session
+		config.Sessions[identifier] = session
 		session1.Set("token", identifier)
 		err1 := session1.Save()
 		if err1 != nil {

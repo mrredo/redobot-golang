@@ -6,7 +6,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	"main/bot1"
+	"main/config"
 	"main/web/auth"
 	"main/web/guilds"
 	"main/web/user"
@@ -25,7 +25,7 @@ func Start(client bot.Client) *gin.Engine {
 		session := sessions.Default(c)
 		tok := session.Get("token")
 		if tok != nil {
-			if _, ok := bot1.Sessions[tok.(string)]; !ok {
+			if _, ok := config.Sessions[tok.(string)]; !ok {
 				c.JSON(401, gin.H{
 					"error": "Authorization required",
 				})
@@ -44,7 +44,7 @@ func Start(client bot.Client) *gin.Engine {
 	})
 	auth1 := r.Group("/auth/")
 	auth1.GET("/login", func(c *gin.Context) {
-		c.Redirect(http.StatusTemporaryRedirect, bot1.AuthClient.GenerateAuthorizationURL("http://localhost:4000/auth/trylogin", discord.PermissionsNone, 0, false, discord.OAuth2ScopeIdentify, discord.OAuth2ScopeGuilds))
+		c.Redirect(http.StatusTemporaryRedirect, config.AuthClient.GenerateAuthorizationURL("http://localhost:4000/auth/trylogin", discord.PermissionsNone, 0, false, discord.OAuth2ScopeIdentify, discord.OAuth2ScopeGuilds))
 	})
 	auth1.GET("/trylogin", func(c *gin.Context) {
 		auth.AuthDiscord(c)

@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"main/bot1"
+	"main/config"
 	"main/web"
 	"os"
 	"os/signal"
@@ -27,8 +28,8 @@ func main() {
 		panic(err)
 	}
 
-	bot1.MongoClient = client1
-	bot1.MongoDatabase = client1.Database("redobot")
+	config.MongoClient = client1
+	config.MongoDatabase = client1.Database("redobot")
 	defer func() {
 		if err = client1.Disconnect(context.TODO()); err != nil {
 			panic(err)
@@ -38,7 +39,7 @@ func main() {
 	gob.Register(map[interface{}]interface{}{})
 	client := bot1.Start()
 	r := web.Start(client)
-
+	s := make(chan os.Signal, 1)
 	go func() {
 		if err = client.OpenGateway(context.TODO()); err != nil {
 			log.Fatal("error while connecting to gateway: ", err)
@@ -46,12 +47,8 @@ func main() {
 
 		log.Println("example is now running. Press CTRL-C to exit.")
 
-		s := make(chan os.Signal, 1)
-		signal.Notify(s, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
-		<-s
-
 		// Block the goroutine to keep the bot1 running
-		select {}
+		//select {}
 	}()
 
 	// Start a goroutine to run the Gin server
@@ -62,6 +59,9 @@ func main() {
 		}
 	}()
 
+	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
+	<-s
 	// Block the main goroutine to keep the application running
-	select {}
+	//select {}
+
 }

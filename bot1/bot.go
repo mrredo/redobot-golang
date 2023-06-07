@@ -5,38 +5,15 @@ import (
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/cache"
-	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/events"
 	"github.com/disgoorg/disgo/gateway"
 	"github.com/disgoorg/disgo/oauth2"
 	"github.com/disgoorg/disgo/rest"
 	"github.com/disgoorg/log"
 	"github.com/disgoorg/snowflake/v2"
-	"go.mongodb.org/mongo-driver/mongo"
-	"net/http"
+	"main/bot1/event"
+	"main/config"
 	"os"
-	"time"
-)
-
-var (
-	clientID      = snowflake.GetEnv("client_id")
-	clientSecret  = os.Getenv("client_secret")
-	baseURL       = os.Getenv("base_url")
-	logger        = log.Default()
-	httpClient    = http.DefaultClient
-	AuthClient    oauth2.Client
-	BotClient     bot.Client
-	MongoClient   *mongo.Client
-	MongoDatabase *mongo.Database
-	Sessions      = map[string]oauth2.Session{
-		"LZMKhogeaugjENjYqssYmAdUdBSkgrme": oauth2.Session{
-			AccessToken:  "0od8WvRzyeVBZtUUUvZiiNNlGwOZxu ",
-			RefreshToken: "ycFRqjlTXxIvYGel1YdT9FxaGXfw2o",
-			Scopes:       []discord.OAuth2Scope{discord.OAuth2ScopeGuilds, discord.OAuth2ScopeIdentify},
-			TokenType:    "Bearer",
-			Expiration:   time.Time{},
-		},
-	}
 )
 
 func StrToSnowflake(id string) snowflake.ID {
@@ -47,7 +24,7 @@ func Start() bot.Client {
 	log.Info("starting example...")
 	log.Infof("disgo version: %s", disgo.Version)
 
-	AuthClient = oauth2.New(StrToSnowflake(os.Getenv("ID")), os.Getenv("SECRET"), oauth2.WithLogger(logger), oauth2.WithRestClientConfigOpts(rest.WithHTTPClient(httpClient)))
+	config.AuthClient = oauth2.New(StrToSnowflake(os.Getenv("ID")), os.Getenv("SECRET"), oauth2.WithRestClientConfigOpts(rest.WithHTTPClient(config.HttpClient)))
 	client, err := disgo.New(os.Getenv("TOKEN"),
 		bot.WithGatewayConfigOpts(gateway.WithIntents(
 			gateway.IntentGuilds,
@@ -61,13 +38,14 @@ func Start() bot.Client {
 		bot.WithEventListenerFunc(func(e *events.Ready) {
 
 		}),
+		bot.WithEventListenerFunc(event.UserJoin),
 	)
-	BotClient = client
+	config.BotClient = client
 	if err != nil {
 		log.Fatal("error while building bot1: ", err)
 	}
 
-	defer BotClient.Close(context.TODO())
+	defer config.BotClient.Close(context.TODO())
 
-	return BotClient
+	return config.BotClient
 }

@@ -3,7 +3,7 @@ package user
 import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"main/bot1"
+	"main/config"
 	"net/http"
 )
 
@@ -14,7 +14,7 @@ func GetUser(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "authorization is required"})
 		return
 	}
-	user, err := bot1.AuthClient.GetUser(bot1.Sessions[tok.(string)])
+	user, err := config.AuthClient.GetUser(config.Sessions[tok.(string)])
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "authorization is required"})
 		return
