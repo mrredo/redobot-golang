@@ -30,6 +30,7 @@ func Start(client bot.Client) *gin.Engine {
 				c.JSON(401, gin.H{
 					"error": "Authorization required",
 				})
+
 				return
 			}
 		}

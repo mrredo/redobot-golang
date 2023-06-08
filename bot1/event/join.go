@@ -43,10 +43,20 @@ func UserJoin(e *events.GuildMemberJoin) {
 		cons.ServerOwnerPlaceholder:        owner.User.Username,
 		cons.ServerOwnerMentionPlaceholder: fmt.Sprintf("<@%s>", owner.User.ID.String()),
 		cons.JoinDatePlaceholder:           mem.JoinedAt.Second(),
-		cons.ServerIconPlaceholder:         guild.Icon, //could throw an error if guild doest have a icon
-		cons.UserIconPlaceholder:           user.Avatar,
-		cons.MemberCountCurrent:            guild.MemberCount,
-		cons.MemberCountPrevious:           guild.MemberCount - 1,
+		//cons.ServerIconPlaceholder:         *guild.Icon, //could throw an error if guild doest have a icon
+		//cons.UserIconPlaceholder:           *user.Avatar,
+		cons.MemberCountCurrent:  guild.MemberCount,
+		cons.MemberCountPrevious: guild.MemberCount - 1,
+	}
+	if guild.IconURL() == nil {
+		placeholder[cons.ServerIconPlaceholder] = "https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6ca814282eca7172c6_icon_clyde_white_RGB.svg"
+	} else {
+		placeholder[cons.ServerIconPlaceholder] = *guild.IconURL()
+	}
+	if user.AvatarURL() == nil {
+		placeholder[cons.UserIconPlaceholder] = "https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6ca814282eca7172c6_icon_clyde_white_RGB.svg"
+	} else {
+		placeholder[cons.UserIconPlaceholder] = *user.AvatarURL()
 	}
 	newJsonFilledData := cons.FindPlaceHoldersAndReplace(decoded, placeholder)
 	creator := discord.MessageCreate{}
@@ -70,6 +80,8 @@ func UserJoin(e *events.GuildMemberJoin) {
 	}
 	_, err = e.Client().Rest().CreateMessage(chanid, creator)
 	if err != nil {
+		fmt.Println(err)
+		e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for join messages, visit dashboard to fix.").Build())
 		return
 	}
 	//cons.FindPlaceHoldersAndReplace(s, placeholder)

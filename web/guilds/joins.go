@@ -51,7 +51,13 @@ func GetMessage(c *gin.Context) {
 		return
 	}
 	msg := &structs.GuildMessage{ID: id.String(), Type: mType}
-	msg.FetchData()
+	err = msg.FetchData()
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": "document not found",
+		})
+		return
+	}
 
 	/*
 		check if user has access to this information by checking if hes in the guild and has manage server perm
@@ -84,6 +90,7 @@ func JoinMessagePUT(c *gin.Context) {
 		c.JSON(400, gin.H{
 			"error": "failed parsing guild id",
 		})
+		return
 	}
 	_, ok := config.BotClient.Caches().Guild(id)
 	if !ok {

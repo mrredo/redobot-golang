@@ -29,7 +29,10 @@ func FindPlaceHoldersAndReplace(s string, placeholder map[Placeholder]any) strin
 	slist := PlaceHolderRegex.FindAllString(s, -1)
 	news := s
 	for _, v := range slist {
-		news = PlaceHolderRegex.ReplaceAllString(news, fmt.Sprintf("%v", placeholder[Placeholder(v)]))
+		//fmt.Println(slist)
+		reg := regexp.MustCompile(v)
+		news = reg.ReplaceAllString(news, fmt.Sprintf("%v", placeholder[Placeholder(v)]))
+		//news = PlaceHolderRegex.ReplaceAllString(news, fmt.Sprintf("%v", placeholder[Placeholder(v)]))
 	}
 	return news
 }
