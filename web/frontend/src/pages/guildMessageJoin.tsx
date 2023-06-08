@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import NavBar from "./navbar";
-import GuildMessageComponent from "./guildMessageComponent";
-export default function GuildMessages() {
+export default function GuildMessagesJOIN() {
     const { id } = useParams();
     const [guild, setGuild] = useState({}) as any;
     const [join, setJoin] = useState({}) as any;
@@ -45,9 +44,9 @@ export default function GuildMessages() {
         };
         fetchMessages();
 
-      }, []);
+    }, []);
     function SendDataMessage() {
-       let  textb = document.getElementById("jsondata")
+        let  textb = document.getElementById("jsondata")
         let selectchan = document.getElementById("channels")
         let enabled = document.getElementById("enabled") as HTMLInputElement
         fetch(`/api/guilds/${id}/${(selectchan as HTMLSelectElement).value}/join?enabled=${enabled.checked}`, {
@@ -61,44 +60,36 @@ export default function GuildMessages() {
     }
     return(
         <div className="main">
-            <NavBar />
-            <div className="text-center pb-2 border-b-white text-white text-5xl mt-16 mb-3 sm:text-[2.7rem]">
-                Edit redobot responses
-                <br/>
-                <a target="_blank" href={`https://glitchii.github.io/embedbuilder/?data=JTdCJTdE`}>Embed builder</a>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-1 m-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-1 m-3">
+                <div className="joins border-white border-2">
+                    <h1 className="text-center rounded-lg text-white font-bold py-2">
+                        <span className="">Join messages</span>
 
-              <div className="joins border-white border-2">
-                <h1 className="text-center rounded-lg text-white font-bold py-2">
-                  <span className="">Join messages</span>
+                    </h1>
+                    <div className="content text-white text-center">
 
-                </h1>
-                <div className="content text-white text-center">
+                        <div className="title">
 
-                  <div className="title">
-
-                      <input id={"enabled"} type={"checkbox"} /> Enabled?
-                      <br/>
-                      Select channel where to send message
-                      <br/>
-                      <select id={"channels"} className="text-black">
-                          {channels.length != 0? channels.map((channel: any) => (
-                              <option value={channel.id}>{channel.name}</option>
-                          )) : ""}
-                      </select>
-                      <br/>
-                    Embed JSON data
-                    <br />
+                            <input id={"enabled"} type={"checkbox"} /> Enabled?
+                            <br/>
+                            Select channel where to send message
+                            <br/>
+                            <select id={"channels"} className="text-black">
+                                {channels.length != 0? channels.map((channel: any) => (
+                                    <option value={channel.id}>{channel.name}</option>
+                                )) : ""}
+                            </select>
+                            <br/>
+                            Embed JSON data
+                            <br />
 
 
-                    <textarea id={"jsondata"} className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
-                      <br/>
-                      <button onClick={() => SendDataMessage()} className="text-3xl border-2 m-2 p-2 rounded-lg hover:rounded-xl hover:bg-green-500 transition-all duration-300" >Save!</button>
-                  </div>
+                            <textarea id={"jsondata"} className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
+                            <br/>
+                            <button onClick={() => SendDataMessage()} className="text-3xl border-2 m-2 p-2 rounded-lg hover:rounded-xl hover:bg-green-500 transition-all duration-300" >Save!</button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-                {/*<GuildMessageComponent type={"Join"} ></GuildMessageComponent>*/}
             </div>
         </div>
     )
