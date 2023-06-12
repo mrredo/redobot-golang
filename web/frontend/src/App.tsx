@@ -8,6 +8,7 @@ import Temp from "./pages/Temp";
 import GuildSettings from "./pages/guildSettings";
 import GuildMessages from "./pages/guildMessages";
 import { ParallaxProvider } from 'react-scroll-parallax';
+import GuildCommands from "./pages/Commands/GuildCommands";
 function App() {
 
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/guilds" element={<GuildPage />} />
+          <Route path="/guilds/:id/commands/" element={<GuildCommands />} />
           <Route path="/guilds/:id/info/" element={<GuildInfo />} />
           <Route path="/guilds/:id/settings/" element={<GuildSettings />} />
           <Route path="/guilds/:id/messages/" element={<GuildMessages />} />

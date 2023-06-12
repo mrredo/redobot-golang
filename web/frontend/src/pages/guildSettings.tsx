@@ -27,6 +27,7 @@ export default function GuildSettings() {
                         href="">
                             Messages
                     </a>
+
             </div>
         </div>
       )

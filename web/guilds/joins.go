@@ -137,7 +137,7 @@ func JoinMessagePUT(c *gin.Context) {
 
 	if err := c.BindJSON(&data); err != nil {
 		c.JSON(400, gin.H{
-			"error": "failed parsing json data or invalid json data",
+			"error": "invalid json data",
 		})
 		fmt.Println(err)
 		return
@@ -145,7 +145,7 @@ func JoinMessagePUT(c *gin.Context) {
 	bd, err1 := json.Marshal(&data)
 	if err1 != nil {
 		c.JSON(400, gin.H{
-			"error": "failed parsing json data 2",
+			"error": "invalid json data",
 		})
 		return
 	}
@@ -153,14 +153,14 @@ func JoinMessagePUT(c *gin.Context) {
 	messageData := make(map[string]any)
 	if err := json.Unmarshal(bd, &messageData); err != nil {
 		c.JSON(400, gin.H{
-			"error": "failed parsing json data 3",
+			"error": "invalid json data",
 		})
 		return
 	}
 	sd, err2 := functions.MapToJSONString(messageData)
 	if err2 != nil {
 		c.JSON(400, gin.H{
-			"error": "failed parsing json data 4",
+			"error": "invalid json data",
 		})
 		return
 	}
@@ -206,6 +206,6 @@ func JoinMessagePUT(c *gin.Context) {
 	//	}
 	//
 	//}
-	c.String(200, "lol")
+	c.JSON(200, *guildmsg)
 
 }

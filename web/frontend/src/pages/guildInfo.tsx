@@ -27,6 +27,10 @@ export default function GuildInfo() {
                         href={`/guilds/${id}/messages`}>
                             Messages
                     </a>
+                <a className="no-underline border-2 w-[95%] rounded-lg text-center py-4 text-3xl md:text-2xl mt-3 font-bold hover:no-underline transition-all duration-200 hover:bg-white hover:text-black"
+                   href={`/guilds/${id}/commands`}>
+                    Custom commands
+                </a>
             </div>
         </div>
       );
