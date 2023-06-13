@@ -41,6 +41,7 @@ func Start() bot.Client {
 
 		}),
 		bot.WithEventListenerFunc(event.UserJoin),
+		bot.WithEventListenerFunc(event.UserLeave),
 	)
 	config.BotClient = client
 	if err != nil {

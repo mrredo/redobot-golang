@@ -1,13 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GuildData } from "src/interfaces/GuildData";
+import Spinner from "./Spinner";
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Placeholder from 'react-bootstrap/Placeholder';
 
-const fetchData = async (setGuilds: any) => {
+const fetchData = async (setGuilds: any, loaded: any) => {
     fetch("/api/guilds")
         .then((response) => response.json())
-        .then((data) => setGuilds(data));
+        .then((data) => {
+            setGuilds(data)
+            loaded(true)
+        });
 };
 
 export default function Guilds() {
+    let [loaded, setLoaded] = useState(false)
     const [guilds, setGuilds] = useState([]);
     const [updateTrigger, setUpdateTrigger] = useState(false); // New state variable
 
@@ -15,7 +23,7 @@ export default function Guilds() {
         "https://www.freepnglogos.com/uploads/discord-logo-png/discord-logo-logodownload-download-logotipos-1.png";
 
     useEffect(() => {
-        fetchData(setGuilds);
+      fetchData(setGuilds, setLoaded);
     }, [updateTrigger]); // Use updateTrigger as a dependency
 
     function OpenBotadd(guildid: string) {
@@ -39,7 +47,10 @@ export default function Guilds() {
 
     return (
         <div className="bg-gray-700 grid-cols-3 sm:grid-cols-1 md:grid-cols-2 grid auto-rows-auto guilds p-13">
-            {guilds.map((guild: any) => (
+            {!loaded? (
+
+<Spinner/>
+            ) : guilds.map((guild: any) => (
                 <div
                     className="1-guild rounded-3xl grid place-items-center w-12/12 m-2 p-3 border-2 border-gray-800 shadow-2xl"
                     key={guild.id}

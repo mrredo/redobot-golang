@@ -3,6 +3,7 @@ import NavBar from "../navbar";
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import {AiOutlinePlus} from "react-icons/ai";
+import Spinner from "../Spinner"
 interface Command {
     name: string
     description: string
@@ -15,6 +16,7 @@ command description 1-100 chars
 
 */
 export default function GuildCommands() {
+    let [loaded, setLoaded] = useState(false)
     let [commands, setCommands]= useState(([
         {
             name: "hello",
@@ -45,10 +47,12 @@ export default function GuildCommands() {
     //get commands
     //set commands
     //ser command count
+    useEffect(() => {
+        setLoaded(true);
+    }, []);
     function UpdateCommand(index: number, newCommand: Command) {
         console.log(index, newCommand)
     }
-
     function ValidateInputName(ev: InputEvent) {
 
     }
@@ -70,7 +74,11 @@ export default function GuildCommands() {
                 </button>
             </div>
             <div className={"commands grid grid-cols-3 md:grid-cols-2 m-2 gap-2 sm:grid-cols-1"}>
-                {commands.map((command:Command, index   ) => (
+                {!loaded? (
+            <Spinner />
+
+
+                ) : commands.map((command:Command, index   ) => (
                     <div className={"border-2 rounded-md"}>
 
 
@@ -98,12 +106,9 @@ export default function GuildCommands() {
                                 <InputGroup.Text>Response</InputGroup.Text>
                                 <Form.Control value={command.response} as="textarea" aria-label="With textarea" />
                             </InputGroup>
-<button onClick={() => UpdateCommand(index, command)}>submit</button>
+                            <button onClick={() => UpdateCommand(index, command)}>submit</button>
                         </div>
-                        <hr />
-                        <div className={"cmddescription"}>
 
-                        </div>
 
                     </div>
                     )
