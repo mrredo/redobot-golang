@@ -9,6 +9,7 @@ import (
 	"main/config"
 	"main/web/auth"
 	"main/web/channel"
+	"main/web/commands"
 	"main/web/guilds"
 	"main/web/user"
 	"net/http"
@@ -22,6 +23,7 @@ func Start(client bot.Client) *gin.Engine {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("token", store))
 	api := r.Group("/api/")
+	api.POST("/guilds/:id/commands", commands.RegisterCommand)
 	api.Use(func(c *gin.Context) {
 		session := sessions.Default(c)
 		tok := session.Get("token")
@@ -41,6 +43,7 @@ func Start(client bot.Client) *gin.Engine {
 		/api/guilds/:id/:channel_id/:type GET
 		get current data
 	*/
+
 	api.GET("/guilds/messages/:id/:type", guilds.GetMessage)
 	api.GET("/guilds/:guild_id/channels", channel.GetChannels)
 	api.GET("/guilds", func(c *gin.Context) {
