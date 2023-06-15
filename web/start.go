@@ -23,7 +23,7 @@ func Start(client bot.Client) *gin.Engine {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("token", store))
 	api := r.Group("/api/")
-	api.POST("/guilds/:id/commands", commands.RegisterCommand)
+
 	api.Use(func(c *gin.Context) {
 		session := sessions.Default(c)
 		tok := session.Get("token")
@@ -37,6 +37,8 @@ func Start(client bot.Client) *gin.Engine {
 		}
 		c.Next()
 	})
+	api.POST("/guilds/:id/commands", commands.RegisterCommand)
+	api.GET("/guilds/:id/commands", commands.GetCommands)
 	/*
 
 		when user messgaes load their current data and add enabled to front end so user can disable and enable it
@@ -45,7 +47,7 @@ func Start(client bot.Client) *gin.Engine {
 	*/
 
 	api.GET("/guilds/messages/:id/:type", guilds.GetMessage)
-	api.GET("/guilds/:guild_id/channels", channel.GetChannels)
+	api.GET("/guilds/:id/channels", channel.GetChannels)
 	api.GET("/guilds", func(c *gin.Context) {
 		guilds.GetGuilds(c)
 	})

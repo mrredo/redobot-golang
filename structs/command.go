@@ -20,6 +20,7 @@ type Command struct {
 	ID          string `json:"id,omitempty"`
 	Description string `json:"description,omitempty"`
 	Response    string `json:"response,omitempty"`
+	Registered  bool   `json:"registered"`
 }
 
 type CommandObject struct {
@@ -87,6 +88,21 @@ DELETE
 SCHEMA
 CommandObject {}
 */
+func (co *CommandObject) Fetch(id snowflake.ID) error {
+	data, err := mongof.FindOne(bson.M{"id": id.String()}, options.FindOne(), config.MongoDatabase, "commands")
+	if err != nil {
+		return err
+	}
+	b, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	if err = json.Unmarshal(b, &co); err != nil {
+		return err
+	}
+	return nil
+
+}
 func NewCommandObjectGlobal(guild snowflake.ID) error {
 	data, err := mongof.FindOne(bson.M{"id": guild.String()}, options.FindOne(), config.MongoDatabase, "commands")
 
@@ -114,6 +130,7 @@ func (c *Command) Register(guild snowflake.ID) error {
 	//_, err = mongof.InsertOne(maps, options.InsertOne(), config.MongoDatabase, "commands")
 	//return err
 }
+
 func (c *Command) Update(guild snowflake.ID) error {
 	//if !c.Exists(guild) {
 	//	return errors.New("command doesn't exist")
