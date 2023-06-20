@@ -123,6 +123,7 @@ func (c *Command) Register(guild snowflake.ID) error {
 		return errors.New("failed registering command")
 	}
 	c.ID = data.ID().String()
+	c.Registered = true
 	//if c.Exists(guild) {
 	return c.Update(guild)
 	//}
@@ -130,7 +131,32 @@ func (c *Command) Register(guild snowflake.ID) error {
 	//_, err = mongof.InsertOne(maps, options.InsertOne(), config.MongoDatabase, "commands")
 	//return err
 }
+func (c *Command) DeleteCommand(guild snowflake.ID) error {
+	if err := c.Find(guild); err != nil {
+		return err
+	}
+	id, err := snowflake.Parse(c.ID)
+	if err != nil {
+		return errors.New("invalid command id")
+	}
 
+	if err := config.BotClient.Rest().DeleteGuildCommand(config.BotClient.ApplicationID(), guild, id); err != nil {
+		return errors.New("failed deleting the command")
+	}
+	//config.BotClient.Rest().DeleteGuildCommand(config.BotClient.ApplicationID(), guild)
+	_, err = mongof.UpdateOne(bson.M{
+		"$unset": bson.M{
+			"commands." + c.Name: "",
+		},
+	}, bson.M{
+		"id": guild.String(),
+	}, options.Update(), config.MongoDatabase, "commands")
+	if err != nil {
+		return errors.New("failed removing command")
+	}
+
+	return nil
+}
 func (c *Command) Update(guild snowflake.ID) error {
 	//if !c.Exists(guild) {
 	//	return errors.New("command doesn't exist")
@@ -159,10 +185,10 @@ func (c *Command) Find(guildid snowflake.ID) error {
 	data, err := mongof.FindOne(bson.M{
 		"id": guildid.String(),
 	}, options.FindOne(), config.MongoDatabase, "commands")
-	if _, ok := data["commands"].(map[string]any)[c.Name]; !ok || err != nil {
+	if _, ok := data["commands"].(primitive.M)[c.Name]; !ok || err != nil {
 		return errors.New("command doesn't exist")
 	}
-	b, err := json.Marshal(data["commands"].(map[string]any)[c.Name])
+	b, err := json.Marshal(data["commands"].(primitive.M)[c.Name])
 	if err != nil {
 		return errors.New("command doesn't exist")
 	}

@@ -39,11 +39,12 @@ func Start(client bot.Client) *gin.Engine {
 	})
 	api.POST("/guilds/:id/commands", commands.RegisterCommand)
 	api.GET("/guilds/:id/commands", commands.GetCommands)
+	api.DELETE("/guilds/:id/commands", commands.DeleteCommand)
 	/*
 
 		when user messgaes load their current data and add enabled to front end so user can disable and enable it
 		/api/guilds/:id/:channel_id/:type GET
-		get current data
+		current data
 	*/
 
 	api.GET("/guilds/messages/:id/:type", guilds.GetMessage)
