@@ -31,14 +31,25 @@ export default function GuildCommands() {
     //set commands
     //ser command count
     useEffect(() => {
-        setLoaded(true);
+
+        function fetchCommands()  {
+            fetch(`/api/guilds/${id}/commands`, {credentials: "include"}).then(res => res.json()).then(data => {
+                if (data.error) {
+                    //setLoaded(true);
+                    return
+                }
+                setCommands(data)
+                setLoaded(true);
+            })
+        }
+        fetchCommands()
     }, []);
 
     function UpdateCommand(index: number, newCommand: Command) {
 
     }
     function CreateCommand(command: Command) {
-        fetch(`/api/guilds/${id}/commands`, {
+        fetch(`/api/guilds/${id}/commands?type=register`, {
             credentials: "include",
             method: "POST",
             body: JSON.stringify(command)
@@ -65,9 +76,7 @@ export default function GuildCommands() {
                     ...prevCommands,
                     [data.name]: cmd,
                 }));
-                Object.keys(commands).map((value, index) => {
-                    console.log(value, index)
-                })
+
             }
 
 

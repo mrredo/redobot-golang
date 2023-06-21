@@ -114,6 +114,16 @@ func NewCommandObjectGlobal(guild snowflake.ID) error {
 	}
 	return nil
 }
+func CheckCommandLimit(guild snowflake.ID) error {
+	data, err := mongof.FindOne(bson.M{"id": guild.String()}, options.FindOne(), config.MongoDatabase, "commands")
+	if err != nil {
+		return errors.New("failed fetching server data")
+	}
+	if len(data["commands"].(primitive.M)) >= 10 {
+		return errors.New("command count limit reached 10/10")
+	}
+	return nil
+}
 func (c *Command) Register(guild snowflake.ID) error {
 	data, err := RegisterCommand(guild, discord.SlashCommandCreate{
 		Name:        c.Name,
@@ -130,6 +140,15 @@ func (c *Command) Register(guild snowflake.ID) error {
 	//maps, _ := c.ToMap()
 	//_, err = mongof.InsertOne(maps, options.InsertOne(), config.MongoDatabase, "commands")
 	//return err
+}
+func CommandExists(name string, guild snowflake.ID) error {
+	data, _ := mongof.FindOne(bson.M{
+		"id": guild.String(),
+	}, options.FindOne(), config.MongoDatabase, "commands")
+	if _, ok := data["commands"].(primitive.M)[name]; ok {
+		return errors.New("command already exists")
+	}
+	return nil
 }
 func (c *Command) DeleteCommand(guild snowflake.ID) error {
 	if err := c.Find(guild); err != nil {

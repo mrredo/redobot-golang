@@ -1,6 +1,7 @@
 package channel
 
 import (
+	"fmt"
 	"github.com/disgoorg/snowflake/v2"
 	"github.com/gin-gonic/gin"
 	"main/config"
@@ -22,28 +23,12 @@ var filters = map[string]map[int]string{
 func GetChannels(c *gin.Context) {
 	/*
 
-
-
-
-
-
-
-
-
 		FILTER CHANNELS THAT USER DOESNT HAS ACCESS TO
 
-
-
-
-
-
-
-
-
-
 	*/
-	guildid, err := snowflake.Parse(c.Param("guild_id"))
+	guildid, err := snowflake.Parse(c.Param("id"))
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{"error": "invalid guild id"})
 		return
 	}

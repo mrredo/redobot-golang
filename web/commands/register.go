@@ -7,6 +7,7 @@ import (
 	"main/config"
 	"main/functions"
 	"main/structs"
+	"strings"
 )
 
 //POST /api/guilds/:id/commands
@@ -15,6 +16,12 @@ body:
 */
 func RegisterCommand(c *gin.Context) {
 
+	typeQuery := strings.ToLower(c.Query("type"))
+	if typeQuery != "update" && typeQuery != "register" {
+		c.JSON(400, gin.H{"error": "invalid type | register/update are only supported"})
+
+		return
+	}
 	guild, err := snowflake.Parse(c.Param("id"))
 	if err != nil {
 		c.JSON(400, gin.H{"error": "invalid server id"})
@@ -46,39 +53,22 @@ func RegisterCommand(c *gin.Context) {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
+	if err = structs.CheckCommandLimit(guild); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	if typeQuery == "register" {
+		if err := structs.CommandExists(cmd.Name, guild); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
 	err = cmd.Register(guild)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(200, cmd)
-	//cmd := structs.CommandObject{Commands: []structs.Command{
-	//	{
-	//		Name:        "hello",
-	//		Description: "hell dwadawdwao",
-	//		ID:          "1118163260638773319",
-	//		Response:    `{"content": "hello"}`,
-	//	},
-	//}}
-	//arr := []discord.ApplicationCommandCreate{}
-	//for _, v := range cmd.Commands {
-	//	arr = append(arr, discord.SlashCommandCreate{
-	//		Name:        v.Name,
-	//		Description: v.Description,
-	//	})
-	//}
-	//commands, err := structs.ConvertCommandsToProperCommands(cmd) // issue
-	//fmt.Println(cmd, commands)
-	//if err != nil {
-	//	c.JSON(400, err)
-	//	return
-	//}
-	//_, err = structs.SetCommands(guild, []discord.ApplicationCommandCreate{
-	//	discord.SlashCommandCreate{
-	//		Name:        "",
-	//		Description: "",
-	//	},
-	//})
-	//fmt.Println(err)
-	//c.JSON(200, err)
+
 }
