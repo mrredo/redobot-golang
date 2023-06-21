@@ -33,49 +33,7 @@ export default function GuildCommands() {
     useEffect(() => {
         setLoaded(true);
     }, []);
-    const commandRender = [];
 
-    for (let key in commands) {
-        if (commands.hasOwnProperty(key)) {
-            let command = commands[key]
-            commandRender.push(
-                <div className={"border-2 rounded-md"}>
-
-
-                    <div className={"cmdname p-2"}>
-                        <InputGroup className="mb-3">
-                            <InputGroup.Text id="basic-addon1">/</InputGroup.Text>
-                            <Form.Control
-                                value={command.name}
-                                disabled
-                                placeholder="Name"
-                                aria-label="cmd-name"
-                                aria-describedby="basic-addon1"
-                            />
-                        </InputGroup>
-                        <InputGroup className="mb-3">
-                            <InputGroup.Text id="basic-addon1">/</InputGroup.Text>
-                            <Form.Control
-                                value={command.description}
-                                placeholder="Description"
-                                aria-label="cmd-description"
-                                aria-describedby="basic-addon1"
-                            />
-                        </InputGroup>
-
-                        <InputGroup>
-                            <InputGroup.Text>Response</InputGroup.Text>
-                            <Form.Control value={command.response} as="textarea" aria-label="With textarea" />
-                        </InputGroup>
-
-                        <button className={"border-2 m-2 p-2 text-lg transition-all duration-300 rounded-md hover:bg-green-600 hover:rounded-xl"} >Update</button>
-                    </div>
-
-
-                </div>
-            );
-        }
-    }
     function UpdateCommand(index: number, newCommand: Command) {
 
     }
@@ -103,10 +61,13 @@ export default function GuildCommands() {
                     timer: 2000,
                 })
                 let cmd = data as Command
-                let cmds = commands
-                cmds[data.name] = cmd
-                setCommands(cmds)
-
+                setCommands((prevCommands) => ({
+                    ...prevCommands,
+                    [data.name]: cmd,
+                }));
+                Object.keys(commands).map((value, index) => {
+                    console.log(value, index)
+                })
             }
 
 
@@ -136,11 +97,47 @@ export default function GuildCommands() {
                 </button>
             </div>
             <div className={"commands grid grid-cols-3 md:grid-cols-2 m-2 gap-2 sm:grid-cols-1"}>
-                {!loaded? (
-            <Spinner />
+                {!loaded ? (
+                    <Spinner />
+                ) : (
+                    Object.keys(commands).map((value, index) => (
+                        <div className={"border-2 rounded-md"}>
 
 
-                ) : commandRender}
+                            <div className={"cmdname p-2"}>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Text id="basic-addon1">/</InputGroup.Text>
+                                    <Form.Control
+                                        value={commands[value].name}
+                                        disabled
+                                        placeholder="Name"
+                                        aria-label="cmd-name"
+                                        aria-describedby="basic-addon1"
+                                    />
+                                </InputGroup>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Text id="basic-addon1">/</InputGroup.Text>
+                                    <Form.Control
+                                        value={commands[value].description}
+                                        placeholder="Description"
+                                        aria-label="cmd-description"
+                                        aria-describedby="basic-addon1"
+                                    />
+                                </InputGroup>
+
+                                <InputGroup>
+                                    <InputGroup.Text>Response</InputGroup.Text>
+                                    <Form.Control value={commands[value].response} as="textarea" aria-label="With textarea" />
+                                </InputGroup>
+
+                                <button className={"border-2 m-2 p-2 text-lg transition-all duration-300 rounded-md hover:bg-green-600 hover:rounded-xl"} >Update</button>
+                            </div>
+
+
+                        </div>
+                    ))
+                )}
+
             </div>
 
 
