@@ -34,11 +34,18 @@ func Start(client bot.Client) *gin.Engine {
 				})
 				c.Abort()
 			}
+		} else {
+			c.JSON(401, gin.H{
+				"error": "Authorization required",
+			})
+			c.Abort()
 		}
 		c.Next()
 	})
 	api.POST("/guilds/:id/commands", commands.RegisterCommand)
+	api.GET("/guilds/:id/commands/:command", commands.GetSingleCommand)
 	api.GET("/guilds/:id/commands", commands.GetCommands)
+
 	api.DELETE("/guilds/:id/commands", commands.DeleteCommand)
 	/*
 
