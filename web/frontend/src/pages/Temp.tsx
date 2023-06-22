@@ -1,4 +1,5 @@
 import React from "react";
+// @ts-ignore
 import skice from "../stuff/skice.png";
 export default function Temp() {
     document.title = "Programmēšana"

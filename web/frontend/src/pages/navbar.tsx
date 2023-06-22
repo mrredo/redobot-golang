@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css"
 import "../styles/NavBar.css"
-import redobot from "../stuff/redobot.png";
+// @ts-ignore
+import redobot from '../stuff/redobot.png';
 export default function NavBar() {
   const [user, setFetchedData] = useState({}) as any;
   useEffect(() => {

@@ -3,7 +3,6 @@ import '../styles/scrollbar.css';
 import NavBar from "./navbar";
 import {} from "react-router-dom";
 import { Parallax, ParallaxProvider, ParallaxBanner } from 'react-scroll-parallax';
-import redobot from "../stuff/redobot.png";
 export default function Home() {
   document.title = "Home";
   return (
