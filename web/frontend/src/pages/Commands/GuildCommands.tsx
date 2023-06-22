@@ -3,7 +3,7 @@ import NavBar from "../navbar";
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import {AiOutlinePlus} from "react-icons/ai";
-import Spinner from "../Spinner"
+import {SimpleSpinner, Spinner} from "../Spinner"
 import {useParams} from "react-router";
 import Swal1 from 'sweetalert2'
 import withReactContent from "sweetalert2-react-content";
@@ -91,8 +91,36 @@ export default function GuildCommands() {
                     return {name: name.value, description: description.value, response: `{"content": "This is the default message of this command {commandname}"}` } as Command
                     },
             }).then((res) => {
+                if(!res.isConfirmed) return
                 let cmd = res.value as Command
+                Swal.fire({
+                    title: <strong>Loading...</strong>,
+                    html:<div className={"flex items-center justify-center h-20"}> <SimpleSpinner/></div>,
+                    padding: 10,
+                    showConfirmButton: false,
 
+                })
+            fetch(`/api/guilds/${id}/commands?type=register`, {
+                credentials: "include",
+                method: "POST",
+                body: JSON.stringify(cmd)
+            }).then(res => res.json()).then((data: any) => {
+                if (data.error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Couldn't create command",
+                        text: `${data.error}`,
+                        showCloseButton: true,
+
+                    })
+                    return
+                }
+                setCommands((prevCommands) => ({
+                    ...prevCommands,
+                    [data.name]: data,
+                }));
+
+            })
         })
 
     }
@@ -102,6 +130,7 @@ export default function GuildCommands() {
             method: "POST",
             body: JSON.stringify(command)
         }).then(res => res.json()).then((data: any) => {
+
             if (data.error != undefined) {
                 console.log(data.error)
                 Swal.fire({
@@ -138,7 +167,7 @@ export default function GuildCommands() {
         <div className={"text-white"}>
             <NavBar/>
             <div className={"m-16"}></div>
-            <h1 className={"text-center"}>
+            <h1 className={"text-center w-screen"}>
                 Add your own commands to a server!
                 <br/>
                 <a className={"no-underline"} target="_blank" href={`https://glitchii.github.io/embedbuilder/?data=JTdCJTdE`}>Response editor</a>
@@ -155,45 +184,21 @@ export default function GuildCommands() {
                     <AiOutlinePlus className="w-10 h-10" />
                 </button>
             </div>
-            <div className={"commands grid grid-cols-3 md:grid-cols-2 m-2 gap-2 sm:grid-cols-1"}>
+            <div className={"commands grid grid-cols-3 md:grid-cols-2 m-[2.4rem] gap-2 sm:grid-cols-1"}>
                 {!loaded ? (
                     <Spinner />
                 ) : (
                     Object.keys(commands).map((value, index) => (
-                        <div className={"border-2 rounded-md"}>
 
 
-                            <div className={"cmdname p-2"}>
-                                {/*<InputGroup className="mb-3">*/}
-                                {/*    <InputGroup.Text id="basic-addon1">/</InputGroup.Text>*/}
-                                {/*    <Form.Control*/}
-                                {/*        value={commands[value].name}*/}
-                                {/*        disabled*/}
-                                {/*        placeholder="Name"*/}
-                                {/*        aria-label="cmd-name"*/}
-                                {/*        aria-describedby="basic-addon1"*/}
-                                {/*    />*/}
-                                {/*</InputGroup>*/}
-                                {/*<InputGroup className="mb-3">*/}
-                                {/*    <InputGroup.Text id="basic-addon1">/</InputGroup.Text>*/}
-                                {/*    <Form.Control*/}
-                                {/*        value={commands[value].description}*/}
-                                {/*        placeholder="Description"*/}
-                                {/*        aria-label="cmd-description"*/}
-                                {/*        aria-describedby="basic-addon1"*/}
-                                {/*    />*/}
-                                {/*</InputGroup>*/}
-
-                                {/*<InputGroup>*/}
-                                {/*    <InputGroup.Text>Response</InputGroup.Text>*/}
-                                {/*    <Form.Control value={commands[value].response} as="textarea" aria-label="With textarea" />*/}
-                                {/*</InputGroup>*/}
-
-                                {/*<button className={"border-2 m-2 p-2 text-lg transition-all duration-300 rounded-md hover:bg-green-600 hover:rounded-xl"} >Update</button>*/}
-                            </div>
+                            <a className={"text-center border-gray-900 rounded-lg border-2 hover:border-3 hover:border-white p-4 no-underline text-white bg-gray-800"} href={`/guilds/${id}/commands/${commands[value].name}`}>
+                                <strong>/{commands[value].name}</strong>
+                                <br/>
+                                <span className="text-gray-600">{commands[value].description}</span>
+                            </a>
 
 
-                        </div>
+
                     ))
                 )}
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GuildData } from "src/interfaces/GuildData";
-import Spinner from "./Spinner";
+import {Spinner} from "./Spinner"
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Placeholder from 'react-bootstrap/Placeholder';
