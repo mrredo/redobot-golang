@@ -8,16 +8,7 @@ import {useParams} from "react-router";
 import Swal1 from 'sweetalert2'
 import withReactContent from "sweetalert2-react-content";
 let Swal = withReactContent(Swal1)
-interface Command {
-    name: string
-    description: string
-    response: string
-    id?: string
-    registered?: boolean
-}
-interface MapCommand {
-    [key: string]: Command
-}
+
 /*
 Command name - 1-32 chars
 command description 1-100 chars
