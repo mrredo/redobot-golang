@@ -1,9 +1,12 @@
 import NavBar from "../navbar";
 import {useParams} from "react-router";
-import React, {useEffect, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
-
+import { redirect } from 'react-router-dom';
+import Swal1 from 'sweetalert2'
+import withReactContent from "sweetalert2-react-content";
+let Swal = withReactContent(Swal1)
 export default function GuildCommand() {
     let {id, command} = useParams()
     let [cmd, setCommand] = useState({} as Command)
@@ -13,7 +16,7 @@ export default function GuildCommand() {
         function fetchCommands()  {
             fetch(`/api/guilds/${id}/commands/${command}`, {credentials: "include"}).then(res => res.json()).then(data => {
                 if (data.error) {
-                    //setLoaded(true);
+                    window.location.href = `/guilds/${id}/commands`
                     return
                 }
                 setCommand(data)
@@ -27,11 +30,77 @@ export default function GuildCommand() {
         fetchCommands()
     }, []);
     function UpdateCommand() {
+        let up = document.getElementById("upd") as HTMLButtonElement
+        up.disabled = true
+        fetch(`/api/guilds/${id}/commands?type=update`, {
+            method: "POST",
+            body: JSON.stringify(cmd),
 
+        }).then((res) => res.json()).then((data) => {
+            if (data.error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Failed updating command",
+                    text: data.error,
+                })
+                setTimeout(() => {
+                    up.disabled = false
+                }, 2000)
+                return
+            }
+            Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                },
+
+            }).fire({
+                icon: "success",
+                title: "Updated the command",
+
+            })
+            setTimeout(() => {
+                up.disabled = false
+            }, 2000)
+
+        })
     }
     function DeleteCommand() {
+        let del = document.getElementById("del") as HTMLButtonElement
+        del.disabled = true
+        fetch(`/api/guilds/${id}/commands/${command}`, {
+            method: "DELETE",
 
+        }).then((res) => {
+            res.json().then((data) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Failed deleting command",
+                    text: data.error,
+                })
+                setTimeout(() => {
+                    del.disabled = false
+                }, 2000)
+            }).catch((e) => {
+                window.location.href = `/guilds/${id}/commands`
+
+            })
+
+        })
     }
+    const handleDescChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        cmd.description = event.target.value
+        setCommand(cmd)
+    };
+    const handleResponseChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        cmd.response = event.target.value
+        setCommand(cmd)
+    };
     return (
         <div className={"text-white"}>
             <NavBar/>
@@ -42,9 +111,9 @@ export default function GuildCommand() {
                 <a className={"no-underline"} target="_blank" href={`https://glitchii.github.io/embedbuilder/?data=JTdCJTdE`}>Response editor</a>
             </h1>
             <div className="flex justify-center items-center">
-                <button className={"mx-[3rem] p-3 border-2 bg-green-700 text-lg transition-all duration-300 border-gray-800 hover:border-white hover:border-3 rounded-md hover:rounded-xl m-[1rem] "}>
+                <button id={"upd"} onClick={() => UpdateCommand()} className={"font-bold mx-[3rem] p-3 border-2 bg-green-700 text-lg transition-all duration-300 border-gray-800 hover:border-white hover:border-3 rounded-md hover:rounded-xl m-[1rem] "}>
                     Update</button>
-                <button className={"mx-[3rem] p-3 border-2 bg-red-800 hover:bg-red-700 text-lg transition-all duration-300 border-gray-800 hover:border-white hover:border-3 rounded-md hover:rounded-xl m-[1rem]"} >
+                <button id={"del"} onClick={() => DeleteCommand()} className={"font-bold mx-[3rem] p-3 border-2 bg-red-800 hover:bg-red-700 text-lg transition-all duration-300 border-gray-800 hover:border-white hover:border-3 rounded-md hover:rounded-xl m-[1rem]"} >
                     Delete</button>
             </div>
             <div className=" flex justify-center items-center">
@@ -52,6 +121,7 @@ export default function GuildCommand() {
                     <InputGroup className="mb-3 ">
                         <InputGroup.Text id="basic-addon1">Description</InputGroup.Text>
                         <Form.Control
+                            onChange={(event) => handleDescChange(event)}
                             max={100}
                             min={1}
 
@@ -68,8 +138,10 @@ export default function GuildCommand() {
             <div className=" flex justify-center items-center">
                 <div className={"w-[50vw]"}>
                     <InputGroup>
+
                         <InputGroup.Text>response</InputGroup.Text>
                         <Form.Control as="textarea" aria-label=""
+                                      onChange={(event) => handleResponseChange(event)}
                         id={"response"}
                         />
                     </InputGroup>

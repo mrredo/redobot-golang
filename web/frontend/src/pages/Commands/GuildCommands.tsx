@@ -106,6 +106,7 @@ export default function GuildCommands() {
                     })
                     return
                 }
+                Swal.close()
                 setCommands((prevCommands) => ({
                     ...prevCommands,
                     [data.name]: data,

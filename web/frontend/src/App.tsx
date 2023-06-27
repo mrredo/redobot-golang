@@ -10,6 +10,7 @@ import GuildMessages from "./pages/guildMessages";
 import { ParallaxProvider } from 'react-scroll-parallax';
 import GuildCommands from "./pages/Commands/GuildCommands";
 import GuildCommand from "./pages/Commands/GuildCommand";
+import './styles/darkswal.scss'
 function App() {
 
   return (
