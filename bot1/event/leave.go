@@ -71,7 +71,7 @@ func UserLeave(e *events.GuildMemberLeave) {
 	}
 	if err := json.Unmarshal([]byte(newJsonFilledData), &creator); err != nil {
 
-		_, err = e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for leave messages, visit dashboard to fix.").Build())
+		_, err = e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for leave messages, visit dashboard to fix.").SetEphemeral(true).Build())
 		return
 	}
 
@@ -80,7 +80,7 @@ func UserLeave(e *events.GuildMemberLeave) {
 	}
 	_, err = e.Client().Rest().CreateMessage(chanid, creator)
 	if err != nil {
-		e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for leave messages, visit dashboard to fix.").Build())
+		e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for leave messages, visit dashboard to fix.").SetEphemeral(true).Build())
 		return
 	}
 	//cons.FindPlaceHoldersAndReplace(s, placeholder)

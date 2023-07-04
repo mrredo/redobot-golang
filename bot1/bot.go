@@ -11,6 +11,7 @@ import (
 	"github.com/disgoorg/disgo/rest"
 	"github.com/disgoorg/log"
 	"github.com/disgoorg/snowflake/v2"
+	"main/bot1/commands"
 	"main/bot1/event"
 	"main/config"
 	"os"
@@ -21,7 +22,6 @@ func StrToSnowflake(id string) snowflake.ID {
 	return id1
 }
 func Start() bot.Client {
-	log.Info("starting example...")
 	log.Infof("disgo version: %s", disgo.Version)
 
 	config.AuthClient = oauth2.New(StrToSnowflake(os.Getenv("ID")), os.Getenv("SECRET"), oauth2.WithRestClientConfigOpts(rest.WithHTTPClient(config.HttpClient)))
@@ -40,6 +40,7 @@ func Start() bot.Client {
 		bot.WithEventListenerFunc(func(e *events.Ready) {
 
 		}),
+		bot.WithEventListenerFunc(commands.HandleCustomCommands),
 		bot.WithEventListenerFunc(event.UserJoin),
 		bot.WithEventListenerFunc(event.UserLeave),
 	)

@@ -71,7 +71,7 @@ func UserJoin(e *events.GuildMemberJoin) {
 	}
 	if err := json.Unmarshal([]byte(newJsonFilledData), &creator); err != nil {
 
-		_, err = e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for join messages, visit dashboard to fix.").Build())
+		_, err = e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for join messages, visit dashboard to fix.").SetEphemeral(true).Build())
 		return
 	}
 
@@ -81,7 +81,7 @@ func UserJoin(e *events.GuildMemberJoin) {
 	_, err = e.Client().Rest().CreateMessage(chanid, creator)
 	if err != nil {
 		fmt.Println(err)
-		e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for join messages, visit dashboard to fix.").Build())
+		e.Client().Rest().CreateMessage(chanid, discord.NewMessageCreateBuilder().SetContent("Invalid json data set for join messages, visit dashboard to fix.").SetEphemeral(true).Build())
 		return
 	}
 	//cons.FindPlaceHoldersAndReplace(s, placeholder)

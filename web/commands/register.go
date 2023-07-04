@@ -63,7 +63,7 @@ func RegisterCommand(c *gin.Context) {
 			return
 		}
 	}
-
+	cmd.Name = strings.ToLower(cmd.Name)
 	err = cmd.Register(guild)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})

@@ -28,7 +28,7 @@ export default function Guilds() {
 
     function OpenBotadd(guildid: string) {
         let win = window.open(
-            `http://localhost:4000/addbot?guild_id=${guildid}`,
+            `/addbot?guild_id=${guildid}`,
             "popup",
             "width=400,height=600"
         );
