@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"encoding/gob"
+	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -38,7 +40,16 @@ func main() {
 	gob.Register(map[string]interface{}{})
 	gob.Register(map[interface{}]interface{}{})
 	client := bot1.Start()
+
 	r := web.Start(client)
+	r.Static("/static", "./web/frontend/build/static/")
+
+	r.Static("/assets/", "./web/frontend/build")
+
+	r.NoRoute(func(c *gin.Context) {
+		fmt.Println(1)
+		c.File("./web/frontend/build/index.html")
+	})
 	s := make(chan os.Signal, 1)
 	go func() {
 		if err = client.OpenGateway(context.TODO()); err != nil {

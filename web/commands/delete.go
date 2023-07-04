@@ -15,7 +15,7 @@ func DeleteCommand(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "invalid server id"})
 		return
 	}
-	name := c.Query("name")
+	name := c.Param("command")
 	if 1 <= len(name) && len(name) >= 32 {
 		c.JSON(400, gin.H{"error": "invalid command name"})
 		return

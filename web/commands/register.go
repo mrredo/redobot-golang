@@ -45,7 +45,7 @@ func RegisterCommand(c *gin.Context) {
 		return
 	}
 	if !cmd.ValidResponse() {
-		c.JSON(400, gin.H{"error": "empty response"})
+		c.JSON(400, gin.H{"error": "invalid response"})
 		return
 	}
 	err = structs.NewCommandObjectGlobal(guild)

@@ -20,6 +20,7 @@ type Command struct {
 	ID          string `json:"id,omitempty"`
 	Description string `json:"description,omitempty"`
 	Response    string `json:"response,omitempty"`
+	Private     bool   `json:"private"`
 	Registered  bool   `json:"registered"`
 }
 
@@ -44,7 +45,7 @@ func (c *Command) ValidDescription() bool {
 	return c.NameLen() >= 1 && c.NameLen() <= 100
 }
 func (c *Command) ValidResponse() bool {
-	return c.Response != ""
+	return c.Response != "" && json.Valid([]byte(c.Response))
 }
 
 func ConvertCommandToProperCommand(object Command) (discord.SlashCommandCreate, error) {

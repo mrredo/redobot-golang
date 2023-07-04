@@ -46,7 +46,7 @@ func Start(client bot.Client) *gin.Engine {
 	api.GET("/guilds/:id/commands/:command", commands.GetSingleCommand)
 	api.GET("/guilds/:id/commands", commands.GetCommands)
 
-	api.DELETE("/guilds/:id/commands", commands.DeleteCommand)
+	api.DELETE("/guilds/:id/commands/:command", commands.DeleteCommand)
 	/*
 
 		when user messgaes load their current data and add enabled to front end so user can disable and enable it
@@ -71,5 +71,6 @@ func Start(client bot.Client) *gin.Engine {
 	auth1.GET("/trylogin", func(c *gin.Context) {
 		auth.AuthDiscord(c)
 	})
+
 	return r
 }
