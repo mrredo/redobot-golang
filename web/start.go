@@ -11,6 +11,7 @@ import (
 	"main/web/channel"
 	"main/web/commands"
 	"main/web/guilds"
+	"main/web/placeholders"
 	"main/web/user"
 	"net/http"
 	"os"
@@ -43,6 +44,8 @@ func Start(client bot.Client) *gin.Engine {
 		}
 		c.Next()
 	})
+	api.GET("/placeholders/:type", placeholders.GetPlaceholders)
+
 	api.POST("/guilds/:id/commands", commands.RegisterCommand)
 	api.GET("/guilds/:id/commands/:command", commands.GetSingleCommand)
 	api.GET("/guilds/:id/commands", commands.GetCommands)

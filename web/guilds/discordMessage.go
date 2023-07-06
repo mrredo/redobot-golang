@@ -4,7 +4,7 @@ import "reflect"
 
 func StripDiscordMessageOfUnwantedInformation(a map[string]any) {
 	delete(a, "tts")
-	delete(a, "message_refrence")
+	delete(a, "message_reference")
 	delete(a, "components")
 	delete(a, "files")
 	delete(a, "payload_json")
