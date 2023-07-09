@@ -46,7 +46,9 @@ jobs:
           - 'linux/amd64'
           - 'linux/arm64'
           - 'windows/amd64'
+          - 'windows/amd32'
           - 'windows/arm64'
+          - 'windows/arm32'
           - 'windows/arm'
 
           - 'windows/386'
