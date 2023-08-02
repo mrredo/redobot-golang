@@ -12,7 +12,9 @@ export default function GuildCommand() {
     let [cmd, setCommand] = useState({} as Command)
     let [loaded, setLoaded] = useState(false)
     useEffect(() => {
+        function fetchPlaceholders() {
 
+        }
         function fetchCommands()  {
             fetch(`/api/guilds/${id}/commands/${command}`, {credentials: "include"}).then(res => res.json()).then(data => {
                 if (data.error) {
@@ -70,6 +72,7 @@ export default function GuildCommand() {
 
         })
     }
+
     function DeleteCommand() {
         let del = document.getElementById("del") as HTMLButtonElement
         del.disabled = true
