@@ -20,12 +20,18 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Clear npm cache and install dependencies
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      - name: Install dependencies for React app
         working-directory: web/frontend
         run: |
-          npm cache clean --force
           npm install
-          npm run build
+          npm install sass --save
+
+      - name: Build React app
+        working-directory: web/frontend
+        run: npm run build
 
       # Step 2: Build the Golang app
       - name: Install Go
