@@ -20,9 +20,10 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Install dependencies and build React app
+      - name: Clear npm cache and install dependencies
         working-directory: web/frontend
         run: |
+          npm cache clean --force
           npm install
           npm run build
 
