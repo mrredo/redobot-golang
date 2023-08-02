@@ -22,13 +22,6 @@ var (
 	BotClient     bot.Client
 	MongoClient   *mongo.Client
 	MongoDatabase *mongo.Database
-	Sessions      = map[string]oauth2.Session{
-		"LZMKhogeaugjENjYqssYmAdUdBSkgrme": oauth2.Session{
-			AccessToken:  "0od8WvRzyeVBZtUUUvZiiNNlGwOZxu ",
-			RefreshToken: "ycFRqjlTXxIvYGel1YdT9FxaGXfw2o",
-			Scopes:       []discord.OAuth2Scope{discord.OAuth2ScopeGuilds, discord.OAuth2ScopeIdentify},
-			TokenType:    "Bearer",
-			Expiration:   time.Time{},
-		},
+	Sessions      = map[string]oauth2.Session{},
 	}
 )
