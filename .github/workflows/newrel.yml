@@ -1,0 +1,79 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 1: Build the React app
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies and build React app
+        working-directory: web/frontend
+        run: |
+          npm install
+          npm run build
+
+      # Step 2: Build the Golang app
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.20.7'
+
+      - name: Build Golang app
+        run: go build -o main
+
+      # Step 3: Create a release
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            This is an auto-generated release.
+          draft: false
+          prerelease: false
+
+      # Step 4: Upload React app build
+      - name: Upload React app build
+        uses: actions/upload-artifact@v2
+        with:
+          name: react-app
+          path: web/frontend/build
+
+      # Step 5: Upload Golang app binary
+      - name: Upload Golang app binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: golang-app
+          path: main
+
+      # Step 6: Zip the React app build and Golang app binary
+      - name: Zip artifacts
+        run: |
+          zip -r react-app.zip web/frontend/build
+          zip main.zip main
+
+      # Step 7: Upload the zipped artifacts
+      - name: Upload zipped artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-artifacts
+          path: |
+            react-app.zip
+            main.zip
