@@ -9,7 +9,15 @@ export default function GuildMessages() {
     const [join, setJoin] = useState({}) as any;
     const [channels, setChannel] = useState([]) as any;
     const [msg, setMessage] = useState({}) as any
+    let [placeholder, setPlaceholder] = useState("")
     useEffect(() => {
+        function fetchPlaceholders() {
+            fetch('/api/placeholders/message', {credentials: "include"}).then(res => res.json()).then((data: string[]) => {
+                setPlaceholder(data.join(", "))
+            })
+
+        }
+        fetchPlaceholders()
         // const fetchData = async () => {
         // fetch(`/api/guilds/${id}`)
         //   .then(response => response.json())
@@ -123,6 +131,15 @@ export default function GuildMessages() {
                 Greetings
                 <br/>
                 <a target="_blank" href={`https://glitchii.github.io/embedbuilder/?data=JTdCJTdE`}>Embed builder</a>
+            </div>
+            <div className=" flex justify-center items-center text-lg">
+
+                Placeholders:
+            </div>
+            <div className=" flex justify-center items-center">
+
+                <span className={"text-lg "}>{placeholder}</span>
+
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-1 m-3 gap-3">
 

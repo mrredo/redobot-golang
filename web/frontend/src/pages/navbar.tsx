@@ -6,10 +6,12 @@ import "../styles/NavBar.css"
 import redobot from '../stuff/redobot.png';
 export default function NavBar() {
   const [user, setFetchedData] = useState({}) as any;
+  let [logged, setLogged] = useState(false)
   useEffect(() => {
     const getData = async () => {
       const datas = await fetch("/api/user");
       setFetchedData(await datas.json());
+      setLogged(datas.status == 200)
     };
     getData();
   }, []);
@@ -31,7 +33,7 @@ export default function NavBar() {
           <Nav className="me-auto">
             <Nav.Link className="text-white" href="#home">About</Nav.Link>
             <Nav.Link className="text-white" href="#link">Documentations</Nav.Link>
-            {!user.error? (
+            {logged? (
                 <NavDropdown title={
                 <span className="text-white">
                   {/*<img className="rounded-full" width="30" src={user.avatar.url} alt="profile picture"/>*/}

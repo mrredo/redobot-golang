@@ -10,9 +10,14 @@ let Swal = withReactContent(Swal1)
 export default function GuildCommand() {
     let {id, command} = useParams()
     let [cmd, setCommand] = useState({} as Command)
+    let [placeholder, setPlaceholder] = useState("")
+
     let [loaded, setLoaded] = useState(false)
     useEffect(() => {
         function fetchPlaceholders() {
+            fetch('/api/placeholders/command', {credentials: "include"}).then(res => res.json()).then((data: string[]) => {
+                setPlaceholder(data.join(", "))
+            })
 
         }
         function fetchCommands()  {
@@ -29,6 +34,7 @@ export default function GuildCommand() {
                 setLoaded(true);
             })
         }
+        fetchPlaceholders()
         fetchCommands()
     }, []);
     function UpdateCommand() {
@@ -112,6 +118,8 @@ export default function GuildCommand() {
                 Edit {command} command
                 <br/>
                 <a className={"no-underline"} target="_blank" href={`https://glitchii.github.io/embedbuilder/?data=JTdCJTdE`}>Response editor</a>
+                <br/>
+
             </h1>
             <div className="flex justify-center items-center">
                 <button id={"upd"} onClick={() => UpdateCommand()} className={"font-bold mx-[3rem] p-3 border-2 bg-green-700 text-lg transition-all duration-300 border-gray-800 hover:border-white hover:border-3 rounded-md hover:rounded-xl m-[1rem] "}>
@@ -119,7 +127,17 @@ export default function GuildCommand() {
                 <button id={"del"} onClick={() => DeleteCommand()} className={"font-bold mx-[3rem] p-3 border-2 bg-red-800 hover:bg-red-700 text-lg transition-all duration-300 border-gray-800 hover:border-white hover:border-3 rounded-md hover:rounded-xl m-[1rem]"} >
                     Delete</button>
             </div>
+            <div className=" flex justify-center items-center text-lg">
+
+                Placeholders:
+            </div>
             <div className=" flex justify-center items-center">
+
+                <span className={"text-lg "}>{placeholder}</span>
+
+                </div>
+            <div className=" flex justify-center items-center">
+
                 <div className={"w-[50vw]"}>
                     <InputGroup className="mb-3 ">
                         <InputGroup.Text id="basic-addon1">Description</InputGroup.Text>
