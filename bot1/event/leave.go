@@ -25,7 +25,7 @@ func UserLeave(e *events.GuildMemberLeave) {
 	}
 	msg := &structs.GuildMessage{
 		ID:   guild.ID.String(),
-		Type: structs.JOIN,
+		Type: structs.LEAVE,
 	}
 	if err := msg.FetchData(); err != nil {
 		return
