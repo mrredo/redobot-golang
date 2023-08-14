@@ -15,7 +15,7 @@ func UserLeave(e *events.GuildMemberLeave) {
 	user := e.Member.User
 	mem := e.Member
 
-	guild, err := e.Client().Rest().GetGuild(e.GuildID, true)
+	guild, err := e.Client().Rest().GetGuild(e.GuildID, false)
 	if err != nil {
 		return
 	}
