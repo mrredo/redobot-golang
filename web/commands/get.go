@@ -22,33 +22,27 @@ func GetCommands(c *gin.Context) {
 		c.JSON(401, gin.H{"error": "you are not in this server and/or you dont have MANAGE_SERVER permission"})
 		return
 	}
-	//commands, err := config.BotClient.Rest().GetGuildCommands(config.BotClient.ApplicationID(), guild, false)
-	//if err != nil {
-	//	c.JSON(404, gin.H{"error": "failed getting commands"})
-	//	return
-	//}
-	commandOb := structs.CommandObject{}
-	if err := commandOb.Fetch(guild); err != nil {
-		c.JSON(200, []string{})
+	commands, err := config.BotClient.Rest().GetGuildCommands(config.BotClient.ApplicationID(), guild, false)
+	if err != nil {
+		c.JSON(404, gin.H{"error": "failed getting commands"})
 		return
 	}
+	commandOb := structs.CommandObject{}
+	if err := commandOb.Fetch(guild); err != nil {
 
-	//newCommands := make([]structs.Command, 0, len(commandOb.Commands))
-	//for _, c := range commandOb.Commands {
-	//	for _, cmd := range commands {
-	//		if cmd.Name() == c.Name {
-	//			c.Registered = true
-	//			newCommands = append(newCommands, c)
-	//			break
-	//		}
-	//	}
-	//}
-	//
-	//for _, command := range newCommands {
-	//	commandOb.Commands[command.Name] = command
-	//}
+		c.JSON(200, gin.H{})
+		return
+	}
+	for _, c := range commandOb.Commands {
+		for _, cmd := range commands {
+			if cmd.Name() == c.Name {
+				c.Registered = true
+				commandOb.Commands[c.Name] = c
+				break
+			}
+		}
+	}
 
-	//c.JSON(200, newCommands)
 	c.JSON(200, commandOb.Commands)
 
 }

@@ -3,6 +3,7 @@ interface Command {
     description: string
     response: string
     id?: string
+    private?: boolean
     registered?: boolean
 }
 interface MapCommand {

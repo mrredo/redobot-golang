@@ -8,7 +8,8 @@ import {useParams} from "react-router";
 import Swal1 from 'sweetalert2'
 import withReactContent from "sweetalert2-react-content";
 let Swal = withReactContent(Swal1)
-
+// @ts-ignore
+import Danger from "../../icons/danger.svg"
 /*
 Command name - 1-32 chars
 command description 1-100 chars
@@ -183,7 +184,13 @@ export default function GuildCommands() {
                     Object.keys(commands).map((value, index) => (
 
 
-                            <a className={"text-center border-gray-900 rounded-lg border-2 hover:border-3 hover:border-white p-4 no-underline text-white bg-gray-800"} href={`/guilds/${id}/commands/${commands[value].name}`}>
+                            <a className={"text-center border-gray-900 rounded-lg border-2 hover:border-3 hover:border-white p-4 no-underline text-white bg-gray-800"} onClick={commands[value].registered? () => {console.log(value)} : () => {}} href={!commands[value].registered? `/guilds/${id}/commands/${commands[value].name}` : null}>
+                                {commands[value].registered? (
+                                    <div className={"grid place-items-center"}>
+                                        <img src={Danger}/>
+                                        <button className={"text-red-600"}>Sync command with Discord!</button>
+                                    </div>
+                                ) : null}
                                 <strong>/{commands[value].name}</strong>
                                 <br/>
                                 <span className="text-gray-600">{commands[value].description}</span>
