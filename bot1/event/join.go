@@ -15,8 +15,8 @@ func UserJoin(e *events.GuildMemberJoin) {
 	user := e.Member.User
 	mem := e.Member
 
-	guild, err := e.Client().Rest().GetGuild(e.GuildID, false)
-	if err != nil {
+	guild, ok := e.Client().Caches().Guild(e.GuildID)
+	if !ok {
 		return
 	}
 	owner, err := e.Client().Rest().GetMember(e.GuildID, guild.OwnerID)
