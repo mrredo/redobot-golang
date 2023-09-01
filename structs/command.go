@@ -3,6 +3,7 @@ package structs
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/snowflake/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -104,6 +105,7 @@ func (co *CommandObject) Fetch(id snowflake.ID) error {
 	return nil
 
 }
+
 func NewCommandObjectGlobal(guild snowflake.ID) error {
 	data, err := mongof.FindOne(bson.M{"id": guild.String()}, options.FindOne(), config.MongoDatabase, "commands")
 
@@ -125,6 +127,36 @@ func CheckCommandLimit(guild snowflake.ID) error {
 	}
 	return nil
 }
+func (co *CommandObject) ReRegisterCommands() error {
+	data, err := mongof.FindOne(bson.M{"id": co.GuildID}, options.FindOne(), config.MongoDatabase, "commands")
+	if err != nil {
+		return err
+	}
+	if len(data["commands"].(primitive.M)) != 0 {
+		commands := data["commands"].(primitive.M)
+		g, _ := snowflake.Parse(co.GuildID)
+		cmds := []discord.ApplicationCommandCreate{}
+		for _, v := range commands {
+			cmd := discord.SlashCommandCreate{}
+			b, err := json.Marshal(v)
+			if err != nil {
+				return err
+			}
+			if err := json.Unmarshal(b, &cmd); err != nil {
+				return err
+			}
+			cmds = append(cmds, cmd)
+
+		}
+		fmt.Println(cmds)
+		_, err := config.BotClient.Rest().SetGuildCommands(config.BotClient.ApplicationID(), g, cmds)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (c *Command) Register(guild snowflake.ID) error {
 	data, err := RegisterCommand(guild, discord.SlashCommandCreate{
 		Name:        c.Name,

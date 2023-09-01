@@ -33,13 +33,15 @@ func GetCommands(c *gin.Context) {
 		c.JSON(200, gin.H{})
 		return
 	}
+
 	for _, c := range commandOb.Commands {
-		for _, cmd := range commands {
-			if cmd.Name() == c.Name {
-				c.Registered = true
-				commandOb.Commands[c.Name] = c
-				break
-			}
+		c.Registered = false
+		commandOb.Commands[c.Name] = c
+		for range commands {
+			c.Registered = true
+			commandOb.Commands[c.Name] = c
+			break
+
 		}
 	}
 

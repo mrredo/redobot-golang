@@ -7,6 +7,8 @@ import (
 	"main/config"
 	"main/functions"
 	"net/http"
+	"net/url"
+	"os"
 	//"github.com/imroc/req/v3"
 )
 
@@ -35,4 +37,22 @@ func AuthDiscord(c *gin.Context) {
 
 	}
 	c.Redirect(http.StatusTemporaryRedirect, "/")
+}
+func Logout(c *gin.Context) {
+	redirect := c.Query("redirect")
+	session1 := sessions.Default(c)
+	if session1.Get("token") != nil {
+		delete(config.Sessions, session1.Get("token").(string))
+		session1.Delete("token")
+	}
+	if redirect != "" {
+		urlredirect, err := url.Parse(os.Getenv("BASE_URL") + redirect)
+		if err != nil {
+			c.String(403, "Invalid redirect URI, this only supports redirects to the same domain")
+			return
+		}
+		c.Redirect(http.StatusSeeOther, urlredirect.Path)
+		return
+	}
+	c.Status(200)
 }

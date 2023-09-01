@@ -7,9 +7,9 @@ import {SimpleSpinner, Spinner} from "../Spinner"
 import {useParams} from "react-router";
 import Swal1 from 'sweetalert2'
 import withReactContent from "sweetalert2-react-content";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 let Swal = withReactContent(Swal1)
-// @ts-ignore
-import Danger from "../../icons/danger.svg"
 /*
 Command name - 1-32 chars
 command description 1-100 chars
@@ -21,12 +21,33 @@ export default function GuildCommands() {
     let [commands, setCommands]= useState({} as MapCommand)
     let [listCommands, setListOfCommands]= useState([] as Command[])
     let [commandCount, setCmdCount] = useState(0)
-    //get commands
+    let [notsynced, setSynced] = useState(false) as any
+    async function SyncCommands() {
+        fetch("http://localhost:4000/api/guilds/1010900109023789119/commands/reregister", {
+            method: "POST",
+            credentials: "include"
+        }).catch(error => console.error)
+    }
+    if (notsynced) {
+        SyncCommands()
+    }
+    const updateSynced = () => {
+        const values: Command[] = Object.values(commands);
+
+        for (let val of Object.keys(commands)) {
+            let cmd = commands[val]
+            if(cmd.registered == false) {
+
+                setSynced(true);
+                return
+            }
+        }
+    };
     //set commands
     //ser command count
     useEffect(() => {
 
-        function fetchCommands()  {
+        async function fetchCommands()  {
             fetch(`/api/guilds/${id}/commands`, {credentials: "include"}).then(res => res.json()).then(data => {
                 if (data.error) {
                     //setLoaded(true);
@@ -34,9 +55,12 @@ export default function GuildCommands() {
                 }
                 setCommands(data)
                 setLoaded(true);
+
+                updateSynced()
+
             })
         }
-        fetchCommands()
+       fetchCommands()
     }, []);
 
     function UpdateCommand(index: number, newCommand: Command) {
@@ -177,6 +201,7 @@ export default function GuildCommands() {
                     <AiOutlinePlus className="w-10 h-10" />
                 </button>
             </div>
+
             <div className={"commands grid grid-cols-3 md:grid-cols-2 m-[2.4rem] gap-2 sm:grid-cols-1"}>
                 {!loaded ? (
                     <Spinner />

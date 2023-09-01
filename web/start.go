@@ -72,9 +72,8 @@ func Start(client bot.Client) *gin.Engine {
 	auth1.GET("/login", func(c *gin.Context) {
 		c.Redirect(http.StatusTemporaryRedirect, config.AuthClient.GenerateAuthorizationURL(os.Getenv("AUTH_URL"), discord.PermissionsNone, 0, false, discord.OAuth2ScopeIdentify, discord.OAuth2ScopeGuilds))
 	})
-	auth1.GET("/trylogin", func(c *gin.Context) {
-		auth.AuthDiscord(c)
-	})
+	auth1.GET("/logout", auth.Logout)
+	auth1.GET("/trylogin", auth.AuthDiscord)
 
 	return r
 }

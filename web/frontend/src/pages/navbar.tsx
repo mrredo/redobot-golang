@@ -8,6 +8,7 @@ import redobot from '../stuff/redobot.png';
 export default function NavBar() {
   const [user, setFetchedData] = useState({}) as any;
   let [logged, setLogged] = useState(false)
+
   useEffect(() => {
     const getData = async () => {
       const datas = await fetch("/api/user");
@@ -16,6 +17,7 @@ export default function NavBar() {
     };
     getData();
   }, []);
+
   return (
     <Navbar bg="dark" fixed="top" expand="lg">
       <Container>
@@ -38,12 +40,12 @@ export default function NavBar() {
                 <NavDropdown title={
                 <span className="text-white">
                   {/*<img className="rounded-full" width="30" src={user.avatar.url} alt="profile picture"/>*/}
-                  {user? user.username : "Loading..."}
+                  {user.username !== ""? user.username : "Loading..."}
                   </span>} id="basic-nav-dropdown">
                   <NavDropdown.Item className="text-white bg-gray-600" href="/guilds">Dashboard</NavDropdown.Item>
                   <NavDropdown.Item className="text-white bg-gray-600" href="/guilds">Your info</NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item className="text-white" href="/auth/logout">Logout</NavDropdown.Item>
+                  <NavDropdown.Item className="text-white" href="/auth/logout?redirect=/">Logout</NavDropdown.Item>
                 </NavDropdown>
                 ) : (
               <Nav.Link className="text-white" href="/auth/login">Login</Nav.Link>
