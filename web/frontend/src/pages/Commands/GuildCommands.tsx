@@ -23,7 +23,7 @@ export default function GuildCommands() {
     let [commandCount, setCmdCount] = useState(0)
     let [notsynced, setSynced] = useState(false) as any
     async function SyncCommands() {
-        fetch("/api/guilds/1010900109023789119/commands/reregister", {
+        fetch(`/api/guilds/${id}/commands/reregister`, {
             method: "POST",
             credentials: "include"
         }).catch(error => console.error)
@@ -31,13 +31,11 @@ export default function GuildCommands() {
     if (notsynced) {
         SyncCommands()
     }
-    const updateSynced = () => {
-        const values: Command[] = Object.values(commands);
+    const updateSynced = (keys: string[], data: MapCommand) => {
 
-        for (let val of Object.keys(commands)) {
-            let cmd = commands[val]
+        for (let val of keys) {
+            let cmd = data[val]
             if(cmd.registered == false) {
-
                 setSynced(true);
                 return
             }
@@ -55,8 +53,7 @@ export default function GuildCommands() {
                 }
                 setCommands(data)
                 setLoaded(true);
-
-                updateSynced()
+                updateSynced(Object.keys(data), (data as MapCommand))
 
             })
         }
