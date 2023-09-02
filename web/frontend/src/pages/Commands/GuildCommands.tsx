@@ -23,7 +23,7 @@ export default function GuildCommands() {
     let [commandCount, setCmdCount] = useState(0)
     let [notsynced, setSynced] = useState(false) as any
     async function SyncCommands() {
-        fetch("http://localhost:4000/api/guilds/1010900109023789119/commands/reregister", {
+        fetch("/api/guilds/1010900109023789119/commands/reregister", {
             method: "POST",
             credentials: "include"
         }).catch(error => console.error)
