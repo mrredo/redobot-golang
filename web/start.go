@@ -3,6 +3,7 @@ package web
 import (
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/discord"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,32 @@ func Start(client bot.Client) *gin.Engine {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("token", store))
 	api := r.Group("/api/")
+	r.Use(cors.New(cors.Config{
+		//  AllowAllOrigins: true,
+		AllowWildcard:          true,
+		AllowWebSockets:        true,
+		AllowBrowserExtensions: true,
+		AllowOrigins:           []string{"http://localhost:4000", "http://localhost:3000", "http://127.0.0.1:3000", "http://127.0.0.1:4000", "https://127.0.0.1:443", "http://127.0.0.1:80", "http://192.168.8.114:4000", "https://redobot-golang-1.mrredogaming.repl.co"},
+		AllowMethods:           []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:           []string{"Origin", "Content-Length", "Content-Type", "Accept", "Cookie", "Set-Cookie"},
+		AllowCredentials:       true,
+	}))
+	//r.Use(csrf.Middleware(csrf.Options{
+	//	Secret: "secretthing3535353533457754",
+	//	ErrorFunc: func(c *gin.Context) {
+	//		fmt.Println(sessions.Default(c).Get("csrfSalt"))
+	//		c.String(400, "CSRF token mismatch")
+	//		c.Abort()
+	//	},
+	//}))
+	//
+	//r.GET("/protected", func(c *gin.Context) {
+	//	c.String(200, csrf.GetToken(c))
+	//})
+	//
+	//r.POST("/protected", func(c *gin.Context) {
+	//	c.String(200, "CSRF token is valid")
+	//})
 
 	api.Use(func(c *gin.Context) {
 		session := sessions.Default(c)
@@ -63,6 +90,7 @@ func Start(client bot.Client) *gin.Engine {
 	api.GET("/guilds", func(c *gin.Context) {
 		guilds.GetGuilds(c)
 	})
+	api.GET("/guilds/:id/botinguild", guilds.IsBotInGuild)
 	api.PUT("/guilds/:id/:channel_id/:type", guilds.JoinMessagePUT)
 	r.GET("/addbot", auth.AddBot)
 	api.GET("/user", func(c *gin.Context) {

@@ -32,16 +32,18 @@ export default function Guilds() {
             "popup",
             "width=400,height=600"
         );
+
+        let interval = setInterval(() => {
+            if(win?.closed) {
+                fetch(`/api/guilds/${guildid}/botinguild`).then((res) => {
+                    if (res.status == 200) {
+                        window.location.href = `/guilds/${guildid}/info`
+                    }
+                }).catch(err => console.error)
+                clearInterval(interval)
+            }
+        }, 500)
         win?.focus();
-        win?.addEventListener("unload", function (){
-
-
-        })
-        win?.window.addEventListener('load', () => {
-            win?.window.addEventListener('unload', () => {
-                window.location.href =  `/guilds/${guildid}/info`;
-            });
-        });
 
     }
 

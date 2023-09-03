@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/gob"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -47,7 +46,6 @@ func main() {
 	r.Static("/assets/", "./web/frontend/build")
 
 	r.NoRoute(func(c *gin.Context) {
-		fmt.Println(1)
 		c.File("./web/frontend/build/index.html")
 	})
 	s := make(chan os.Signal, 1)

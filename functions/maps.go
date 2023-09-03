@@ -1,6 +1,9 @@
 package functions
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/gin-gonic/gin"
+)
 
 func MapToJSONString(m map[string]interface{}) (string, error) {
 	jsonBytes, err := json.Marshal(m)
@@ -9,4 +12,7 @@ func MapToJSONString(m map[string]interface{}) (string, error) {
 	}
 	jsonString := string(jsonBytes)
 	return jsonString, nil
+}
+func Error(msg string) gin.H {
+	return gin.H{"error": msg}
 }

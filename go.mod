@@ -3,12 +3,15 @@ module main
 go 1.19
 
 require (
+	github.com/dchest/uniuri v1.2.0
 	github.com/disgoorg/disgo v0.16.5
 	github.com/disgoorg/log v1.2.0
 	github.com/disgoorg/snowflake/v2 v2.0.1
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
+	github.com/utrack/gin-csrf v0.0.0-20190424104817-40fb8d2c8fca
 	go.mongodb.org/mongo-driver v1.11.6
 )
 
@@ -54,6 +57,5 @@ require (
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
-	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
