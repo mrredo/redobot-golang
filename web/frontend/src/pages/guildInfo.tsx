@@ -19,10 +19,10 @@ export default function GuildInfo() {
                 Edit {(guild as any).name} server settings
             </h1>
             <div className="links grid grid-cols-3 md:grid-cols-2 m-2">
-                    <a className="no-underline border-2 rounded-lg w-[95%] py-4 text-3xl md:text-2xl mt-3 font-bold text-center hover:no-underline transition-all duration-500 hover:bg-white hover:text-black" 
-                        href={`/guilds/${id}/settings`}>
-                        Settings
-                    </a>
+                    {/*<a className="no-underline border-2 rounded-lg w-[95%] py-4 text-3xl md:text-2xl mt-3 font-bold text-center hover:no-underline transition-all duration-500 hover:bg-white hover:text-black" */}
+                    {/*    href={`/guilds/${id}/settings`}>*/}
+                    {/*    Settings*/}
+                    {/*</a>*/}
                     <a className="no-underline border-2 w-[95%] rounded-lg text-center py-4 text-3xl md:text-2xl mt-3 font-bold hover:no-underline transition-all duration-200 hover:bg-white hover:text-black" 
                         href={`/guilds/${id}/messages`}>
                             Messages
