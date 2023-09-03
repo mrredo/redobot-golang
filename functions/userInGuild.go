@@ -9,11 +9,10 @@ import (
 
 func IsUserInGuild(session oauth2.Session, guildId snowflake.ID) bool {
 	guilds, _ := config.AuthClient.GetGuilds(session)
-	var good bool
 	for _, guild := range guilds {
-		if guild.Permissions.Has(discord.PermissionManageGuild) && guild.ID.String() == guildId.String() {
-			good = true
+		if (guild.Permissions.Has(discord.PermissionManageGuild) || guild.Owner) && guild.ID.String() == guildId.String() {
+			return true
 		}
 	}
-	return good
+	return false
 }

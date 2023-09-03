@@ -84,6 +84,7 @@ export default function GuildCommand() {
         del.disabled = true
         fetch(`/api/guilds/${id}/commands/${command}`, {
             method: "DELETE",
+            credentials: "include"
 
         }).then((res) => {
             res.json().then((data) => {
