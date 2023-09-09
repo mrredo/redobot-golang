@@ -21,4 +21,5 @@ var (
 	MongoClient   *mongo.Client
 	MongoDatabase *mongo.Database
 	Sessions      = map[string]oauth2.Session{}
+	StripeKey     = os.Getenv("STRIPE_KEY")
 )

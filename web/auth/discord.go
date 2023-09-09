@@ -13,6 +13,7 @@ import (
 )
 
 func AuthDiscord(c *gin.Context) {
+	redirect := c.Query("r")
 	session1 := sessions.Default(c)
 	var (
 		code  = c.Query("code")
@@ -36,7 +37,16 @@ func AuthDiscord(c *gin.Context) {
 		}
 
 	}
-	c.Redirect(http.StatusTemporaryRedirect, "/")
+	if redirect != "" {
+		urlredirect, err := url.Parse(os.Getenv("BASE_URL") + redirect)
+		if err != nil {
+			c.String(403, "Invalid redirect URI, this only supports redirects to the same domain")
+			return
+		}
+		c.Redirect(http.StatusSeeOther, urlredirect.Path)
+		return
+	}
+	c.Redirect(http.StatusSeeOther, "/")
 }
 func Logout(c *gin.Context) {
 	redirect := c.Query("redirect")

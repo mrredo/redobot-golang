@@ -14,6 +14,7 @@ import (
 	"main/web/guilds"
 	"main/web/placeholders"
 	"main/web/user"
+	"main/web/webhooks"
 	"net/http"
 	"os"
 )
@@ -36,6 +37,8 @@ func Start(client bot.Client) *gin.Engine {
 		AllowHeaders:           []string{"Origin", "Content-Length", "Content-Type", "Accept", "Cookie", "Set-Cookie"},
 		AllowCredentials:       true,
 	}))
+	r.GET("/checkout", webhooks.SessionThing)
+	api.POST("/webhook", webhooks.HandleWebhook)
 	//r.Use(csrf.Middleware(csrf.Options{
 	//	Secret: "secretthing3535353533457754",
 	//	ErrorFunc: func(c *gin.Context) {
