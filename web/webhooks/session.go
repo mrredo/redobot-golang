@@ -11,34 +11,52 @@ import (
 
 func SessionThing(c *gin.Context) {
 	session1 := sessions.Default(c)
+	yearlypremium := c.Query("pr")
 	tok := session1.Get("token")
 	if tok == nil {
 		c.Redirect(http.StatusFound, "/auth/login?r=/checkout")
 		return
 	}
+	amount := 2.99
+	interval := "month"
+	intervalcount := 1
+	switch yearlypremium {
+	case "year":
+		yearlypremium = "prod_ObrYinRXqhcjOF"
+		amount = 28.99
+		interval = "year"
+		break
+	case "month":
+		yearlypremium = "prod_ObrVDdHPA22IHJ"
+	default:
+		yearlypremium = "prod_ObrVDdHPA22IHJ"
+	}
 	user, err := config.AuthClient.GetUser(config.Sessions[tok.(string)])
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "authorization is required"})
+		c.Redirect(http.StatusFound, "/auth/login?r=/checkout")
 		return
 	}
 	params := &stripe.CheckoutSessionParams{
 		PaymentMethodTypes: stripe.StringSlice([]string{
 			"card",
 			"paypal",
-			"alipay",
 		}),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
 				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
 					Currency:   stripe.String("eur"),
-					Product:    stripe.String("prod_ObWxPH6p9NyZ3Z"),
-					UnitAmount: stripe.Int64(10_000_000), // Amount in cents
+					Product:    stripe.String(yearlypremium),
+					UnitAmount: stripe.Int64(int64(amount * 100)),
+					Recurring: &stripe.CheckoutSessionLineItemPriceDataRecurringParams{
+						Interval:      stripe.String(interval),
+						IntervalCount: stripe.Int64(int64(intervalcount)),
+					},
 				},
 				Quantity: stripe.Int64(1),
 			},
 		},
 		Metadata:   map[string]string{"userid": user.ID.String()},
-		Mode:       stripe.String("payment"),
+		Mode:       stripe.String("subscription"),
 		SuccessURL: stripe.String("https://your-website.com/success"),
 		CancelURL:  stripe.String("https://your-website.com/cancel"),
 	}

@@ -49,6 +49,7 @@ func HandleWebhook(c *gin.Context) {
 		paymentIntentmap := map[string]any{}
 		json.Unmarshal(event.Data.Raw, &paymentIntentmap)
 		fmt.Println(paymentIntentmap["metadata"].(map[string]any)["userid"])
+		fmt.Println(paymentIntentmap)
 
 	case "payment_method.attached":
 		var paymentMethod stripe.PaymentMethod
