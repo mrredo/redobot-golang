@@ -12,6 +12,7 @@ import GuildCommands from "./pages/Commands/GuildCommands";
 import GuildCommand from "./pages/Commands/GuildCommand";
 import './styles/darkswal.scss'
 import PaymentPremiumPage from "./pages/premium/PremiumPage";
+import {DiscordLoginBtn} from "./pages/popups/discordloginpopup";
 function App() {
 
   return (
@@ -26,7 +27,7 @@ function App() {
           <Route path="/guilds/:id/info/" element={<GuildInfo />} />
           <Route path="/guilds/:id/settings/" element={<GuildSettings />} />
           <Route path="/guilds/:id/messages/" element={<GuildMessages />} />
-          {/*<Route path="/majas/" element={<Temp />}></Route>*/}
+          <Route path="/majas/" element={<DiscordLoginBtn />}></Route>
           <Route path="/premium" element={<PaymentPremiumPage/>}></Route>
         </Routes>
     </BrowserRouter>
