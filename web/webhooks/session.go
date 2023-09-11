@@ -7,6 +7,7 @@ import (
 	"github.com/stripe/stripe-go/v75/checkout/session"
 	"main/config"
 	"net/http"
+	"os"
 )
 
 func SessionThing(c *gin.Context) {
@@ -57,8 +58,8 @@ func SessionThing(c *gin.Context) {
 		},
 		Metadata:   map[string]string{"userid": user.ID.String()},
 		Mode:       stripe.String("subscription"),
-		SuccessURL: stripe.String("https://your-website.com/success"),
-		CancelURL:  stripe.String("https://your-website.com/cancel"),
+		SuccessURL: stripe.String(os.Getenv("BASE_URL") + "/guilds"),
+		CancelURL:  stripe.String(os.Getenv("BASE_URL") + "/guilds"),
 	}
 
 	checkoutSession, err := session.New(params)
