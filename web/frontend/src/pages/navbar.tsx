@@ -18,6 +18,7 @@ export default function NavBar(props: Props) {
   useEffect(() => {
     const getData = async () => {
       const datas = await fetch("/api/user");
+
       let jsd = await datas.json()
       setFetchedData(jsd);
       setLogged(datas.status == 200)

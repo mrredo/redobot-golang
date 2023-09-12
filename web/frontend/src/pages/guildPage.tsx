@@ -21,12 +21,10 @@ export default function GuildPage() {
 
         }
     })
-    console.log(user1)
     return (
         <div className="page">
             <NavBar discordloginpopup={true} path={"/guilds"} setuser={function (user) {
                 setUser(user)
-                console.log(user)
             }} />
             <div className="text-center text-white text-5xl mt-16 mb-3 sm:text-[2.7rem]">
                 Select a server
