@@ -5,15 +5,29 @@ import "../styles/NavBar.css"
 
 // @ts-ignore
 import redobot from '../stuff/redobot.png';
-export default function NavBar() {
+import {DiscordLoginPopup} from "./popups/discordloginpopup";
+interface Props {
+  discordloginpopup?: boolean
+  path?: string
+  setuser?: (user: any) => void
+}
+export default function NavBar(props: Props) {
   const [user, setFetchedData] = useState({}) as any;
   let [logged, setLogged] = useState(false)
 
   useEffect(() => {
     const getData = async () => {
       const datas = await fetch("/api/user");
-      setFetchedData(await datas.json());
+      let jsd = await datas.json()
+      setFetchedData(jsd);
       setLogged(datas.status == 200)
+      if (props.setuser) {
+        props.setuser(jsd); // Make sure to replace userData with the actual user data
+      }
+
+      if(!(datas.status == 200) && props.discordloginpopup) {
+        DiscordLoginPopup(/*(props.path == ""? "/" : props.path) as string*/)
+      }
     };
     getData();
   }, []);
