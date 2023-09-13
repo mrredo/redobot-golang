@@ -14,7 +14,7 @@ export default function GuildInfo() {
       }, []);
       return (
           <div className="data">
-              <NavBar />
+              <NavBar discordloginpopup path={`/guilds/${id}/info`} />
             <h1 className="text-white rounded-3xl lg:text-5xl sm:text-4xl p-3 ml-4 mr-4 mt-16 border-4 border-gray-800 text-center">
                 Edit {(guild as any).name} server settings
             </h1>

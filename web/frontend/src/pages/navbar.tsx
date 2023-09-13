@@ -10,6 +10,7 @@ interface Props {
   discordloginpopup?: boolean
   path?: string
   setuser?: (user: any) => void
+  setUserF?: (data: any) => void
 }
 export default function NavBar(props: Props) {
   const [user, setFetchedData] = useState({}) as any;
@@ -24,6 +25,9 @@ export default function NavBar(props: Props) {
       setLogged(datas.status == 200)
       if (props.setuser) {
         props.setuser(jsd); // Make sure to replace userData with the actual user data
+      }
+      if(props.setUserF) {
+        props.setUserF(jsd)
       }
 
       if(!(datas.status == 200) && props.discordloginpopup) {

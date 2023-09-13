@@ -3,18 +3,27 @@ import { useParams } from "react-router-dom";
 import Swal from 'sweetalert2'
 import NavBar from "./navbar";
 import GuildMessageComponent from "./guildMessageComponent";
+import {Spinner} from "./Spinner";
 export default function GuildMessages() {
     const { id } = useParams();
     const [guild, setGuild] = useState({}) as any;
     const [join, setJoin] = useState({}) as any;
     const [channels, setChannel] = useState([]) as any;
     const [msg, setMessage] = useState({}) as any
+    const [user, setUser] = useState({} as any)
     let [placeholder, setPlaceholder] = useState("")
     useEffect(() => {
-        function fetchPlaceholders() {
-            fetch('/api/placeholders/message', {credentials: "include"}).then(res => res.json()).then((data: string[]) => {
-                setPlaceholder(data.join(", "))
-            })
+        async function fetchPlaceholders() {
+            let res = await fetch('/api/placeholders/message', {credentials: "include"})/*.then(res => res.json()).then((data: string[]) => {
+                if (data.length != 0 ) {
+                    setPlaceholder(data.join(", "))
+
+                }
+            })*/
+            let jsd = await res.json()
+            if(res.ok) {
+                setPlaceholder(jsd.join(", "))
+            }
 
         }
         fetchPlaceholders()
@@ -126,7 +135,8 @@ export default function GuildMessages() {
     }
     return(
         <div className="main">
-            <NavBar />
+            <NavBar discordloginpopup path={`/guilds/${id}/messages`} setUserF={setUser} />
+
             <div className="text-center pb-2 border-b-white text-white text-5xl mt-16 mb-3 sm:text-[2.7rem]">
                 Greetings
                 <br/>
@@ -141,68 +151,74 @@ export default function GuildMessages() {
                 <span className={"text-lg "}>{placeholder}</span>
 
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-1 m-3 gap-3">
+            {user.username? (
+                <div className="grid grid-cols-2 sm:grid-cols-1 m-3 gap-3">
 
-              <div className="joins border-white border-2">
-                <h1 className="text-center rounded-lg text-white font-bold py-2">
-                  <span className="">Join messages</span>
+                    <div className="joins border-white border-2">
+                        <h1 className="text-center rounded-lg text-white font-bold py-2">
+                            <span className="">Join messages</span>
 
-                </h1>
-                <div className="content text-white text-center">
+                        </h1>
+                        <div className="content text-white text-center">
 
-                  <div className="title">
+                            <div className="title">
 
-                      <input id={"enabled"} type={"checkbox"} /> Enabled?
-                      <br/>
-                      Select channel where to send message
-                      <br/>
-                      <select id={"channels"} className="text-black">
-                          {channels.length != 0? channels.map((channel: any) => (
-                              <option value={channel.id}>{channel.name}</option>
-                          )) : ""}
-                      </select>
-                      <br/>
-                    Embed JSON data
-                    <br />
+                                <input id={"enabled"} type={"checkbox"} /> Enabled?
+                                <br/>
+                                Select channel where to send message
+                                <br/>
+                                <select id={"channels"} className="text-black">
 
-
-                    <textarea id={"jsondata"} className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
-                      <br/>
-                      <button onClick={() => SendDataMessage()} className="text-3xl border-2 m-2 p-2 rounded-lg hover:rounded-xl hover:bg-green-500 transition-all duration-300" >Save!</button>
-                  </div>
-                </div>
-              </div>
-                <div className="joins border-white border-2">
-                    <h1 className="text-center rounded-lg text-white font-bold py-2">
-                        <span className="">Leave messages</span>
-
-                    </h1>
-                    <div className="content text-white text-center">
-
-                        <div className="title">
-
-                            <input id={"enabled1"} type={"checkbox"} /> Enabled?
-                            <br/>
-                            Select channel where to send message
-                            <br/>
-                            <select id={"channels1"} className="text-black">
-                                {channels.length != 0? channels.map((channel: any) => (
-                                    <option value={channel.id}>{channel.name}</option>
-                                )) : ""}
-                            </select>
-                            <br/>
-                            Embed JSON data
-                            <br />
+                                    {channels.length != 0 && user.username? channels.map((channel: any) => (
+                                        <option value={channel.id}>{channel.name}</option>
+                                    )) : ""}
+                                </select>
+                                <br/>
+                                Embed JSON data
+                                <br />
 
 
-                            <textarea id={"jsondata1"} className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
-                            <br/>
-                            <button onClick={() => SendDataMessage1()} className="text-3xl border-2 m-2 p-2 rounded-lg hover:rounded-xl hover:bg-green-500 transition-all duration-300" >Save!</button>
+                                <textarea id={"jsondata"} className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
+                                <br/>
+                                <button onClick={() => SendDataMessage()} className="text-3xl border-2 m-2 p-2 rounded-lg hover:rounded-xl hover:bg-green-500 transition-all duration-300" >Save!</button>
+                            </div>
                         </div>
                     </div>
+                    <div className="joins border-white border-2">
+                        <h1 className="text-center rounded-lg text-white font-bold py-2">
+                            <span className="">Leave messages</span>
+
+                        </h1>
+                        <div className="content text-white text-center">
+
+                            <div className="title">
+
+                                <input id={"enabled1"} type={"checkbox"} /> Enabled?
+                                <br/>
+                                Select channel where to send message
+                                <br/>
+                                <select id={"channels1"} className="text-black">
+                                    {channels.length != 0 && user.username?  channels.map((channel: any) => (
+                                        <option value={channel.id}>{channel.name}</option>
+                                    )) : ""}
+                                </select>
+                                <br/>
+                                Embed JSON data
+                                <br />
+
+
+                                <textarea id={"jsondata1"} className={"resize w-[20vw] h-[5vw] rounded-lg bg-gray-800"}></textarea>
+                                <br/>
+                                <button onClick={() => SendDataMessage1()} className="text-3xl border-2 m-2 p-2 rounded-lg hover:rounded-xl hover:bg-green-500 transition-all duration-300" >Save!</button>
+                            </div>
+                        </div>
+                    </div>
+                    {/*<GuildMessageComponent type={"Join"} ></GuildMessageComponent>*/}
                 </div>
-                {/*<GuildMessageComponent type={"Join"} ></GuildMessageComponent>*/}
-            </div>
+                ): (
+                <Spinner/>
+                )}
+
         </div>
     )
 }
