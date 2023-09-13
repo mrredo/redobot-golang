@@ -9,6 +9,6 @@ AUTH_URL=http://localhost:4000/auth/trylogin
 
 BASE_URL=http://localhost:4000
 BOT_URL=BOT_INVITATION_URL
-
+STRIPE_KEY=STRIPE_SECRET_KEY
 
 ```
