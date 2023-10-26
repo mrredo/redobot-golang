@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/discord"
 	"github.com/gin-contrib/cors"
@@ -8,6 +9,8 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"main/config"
+	"main/cons"
+	"main/functions"
 	"main/web/auth"
 	"main/web/channel"
 	"main/web/commands"
@@ -37,6 +40,19 @@ func Start(client bot.Client) *gin.Engine {
 		AllowHeaders:           []string{"Origin", "Content-Length", "Content-Type", "Accept", "Cookie", "Set-Cookie"},
 		AllowCredentials:       true,
 	}))
+	r.POST("/place", func(c *gin.Context) {
+		text := c.Query("t")
+		place := map[string]any{
+			cons.NewUser: map[string]any{
+				"username": "MrRedo",
+				"id":       "22545474574",
+			},
+		}
+		decoded, _ := functions.Base64Decode(text)
+		fmt.Println(place, decoded)
+		text = cons.FindReplacePlaceholders(decoded, place)
+		c.String(200, text)
+	})
 	r.GET("/checkout", webhooks.SessionThing)
 	api.POST("/webhook", webhooks.HandleWebhook)
 	//r.Use(csrf.Middleware(csrf.Options{

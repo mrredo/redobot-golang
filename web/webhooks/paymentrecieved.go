@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stripe/stripe-go/v75"
 	"io/ioutil"
+	"main/structs"
 	"net/http"
 	"os"
 )
@@ -48,8 +49,29 @@ func HandleWebhook(c *gin.Context) {
 	case "checkout.session.completed":
 		paymentIntentmap := map[string]any{}
 		json.Unmarshal(event.Data.Raw, &paymentIntentmap)
-		fmt.Println(paymentIntentmap["metadata"].(map[string]any)["userid"])
+		id, ok := paymentIntentmap["metadata"].(map[string]any)["userid"]
+		if !ok {
+			fmt.Println(0)
+			return
+		}
+		//cus, ok1 := paymentIntentmap["customer_id"]
+		//if !ok1 {
+		//	fmt.Println(paymentIntentmap)
+		//	return
+		//}
+		sub, ok2 := paymentIntentmap["subscription"]
+		if !ok2 {
+			fmt.Println(2)
+			return
+		}
+		expat, ok3 := paymentIntentmap["expires_at"]
+		if !ok3 {
+			fmt.Println(3)
+			return
+		}
 		fmt.Println(paymentIntentmap)
+		prem := structs.NewPremium(id.(string), sub.(string), expat.(float64))
+		prem.RegisterNewCustomer()
 
 	case "payment_method.attached":
 		var paymentMethod stripe.PaymentMethod

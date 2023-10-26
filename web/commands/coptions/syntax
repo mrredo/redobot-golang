@@ -1,0 +1,4 @@
+{{command_name}}
+{{command_name / command_name + command_name + 1000}} // math && bool operations
+{{command_name.field_name}}
+{{command_name.Contains("s")}} // maybe not decided to add just a suggestion

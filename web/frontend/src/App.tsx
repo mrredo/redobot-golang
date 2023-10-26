@@ -13,6 +13,8 @@ import GuildCommand from "./pages/Commands/GuildCommand";
 import './styles/darkswal.scss'
 import PaymentPremiumPage from "./pages/premium/PremiumPage";
 import {DiscordLoginBtn} from "./pages/popups/discordloginpopup";
+import SyntaxHighlight from "./pages/syntaxHighlight";
+import ColoredWordsEditor from "./pages/TEST";
 function App() {
 
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/guilds/:id/messages/" element={<GuildMessages />} />
           <Route path="/majas/" element={<DiscordLoginBtn />}></Route>
           <Route path="/premium" element={<PaymentPremiumPage/>}></Route>
+          <Route path="/test" element={<SyntaxHighlight/>}></Route>
+          <Route path="/test1" element={<ColoredWordsEditor/>}></Route>
         </Routes>
     </BrowserRouter>
   </ParallaxProvider>

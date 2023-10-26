@@ -11,6 +11,7 @@ import (
 	"log"
 	"main/bot1"
 	"main/config"
+	"main/cons"
 	"main/web"
 	"os"
 	"os/signal"
@@ -28,7 +29,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	cons.TestThings()
 	config.MongoClient = client1
 	config.MongoDatabase = client1.Database("redobot")
 	defer func() {

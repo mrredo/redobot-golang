@@ -2,7 +2,9 @@ package cons
 
 import (
 	"fmt"
+	"github.com/mrredo/govaluate"
 	"regexp"
+	"strings"
 )
 
 type Placeholder string
@@ -34,6 +36,7 @@ var (
 	PlaceHolderRegex = regexp.MustCompile(`{\w+}`)
 )
 
+// DEPRECATED: new function FindReplacePlaceholders
 func FindPlaceHoldersAndReplace(s string, placeholder map[Placeholder]any) string {
 	slist := PlaceHolderRegex.FindAllString(s, -1)
 	news := s
@@ -45,3 +48,62 @@ func FindPlaceHoldersAndReplace(s string, placeholder map[Placeholder]any) strin
 	}
 	return news
 }
+
+const (
+	NewPlaceholders = ""
+	CommandOption   = ""
+	NewUser         = "user"
+	//NewUserMention         = "usermention"
+	//NewUserID              = "userid"
+	NewServer = "server"
+	//NewServerOwner         = "serverowner"
+	//NewServerOwnerMention  = "serverownermention"
+	//NewJoinDate            = "joindate"
+	//NewServerIcon          = "servericon"
+	//NewUserIcon            = "usericon"
+	//NewMemberCountCurrent  = "currentmembers"
+	//NewMemberCountPrevious = "lastmembers"
+	//NewCommandName         = "commandname"
+)
+
+var (
+	NewPlaceholderRegex = regexp.MustCompile(`\{([^{}]+)\}`)
+)
+
+func TestThings() {
+
+	stringss := []string{
+		"{cmd}} {cmd1.go} {cmd2}",
+	}
+	place := map[string]any{
+		"cmd": "e",
+		"cmd1": map[string]any{
+			"go": "eee",
+		},
+		"cmd2": map[string]any{},
+	}
+	_ = place
+	for _, v := range stringss {
+		fmt.Println(FindReplacePlaceholders(v, place))
+	}
+}
+func FindReplacePlaceholders(text string, parameters map[string]any) string {
+	matches := ExtractPlaceholders(text)
+	for _, v := range matches {
+		expr, _ := govaluate.NewEvaluableExpression(v[1:len(v)-1], false)
+		res, err := expr.Evaluate(parameters)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		text = strings.ReplaceAll(text, v, fmt.Sprintf("%v", res))
+	}
+	return text
+}
+func ExtractPlaceholders(text string) []string {
+	return NewPlaceholderRegex.FindAllString(text, -1)
+}
+
+//func NewParsePlaceholders(text string, parameters map[string]any) {
+//	expr, _ := govaluate.NewEvaluableExpressionWithFunctions(text, map[string]govaluate.ExpressionFunction{}, false)
+//	fmt.Println(expr.Evaluate(parameters))
+//}

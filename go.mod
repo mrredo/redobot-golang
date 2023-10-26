@@ -11,7 +11,7 @@ require (
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
-	github.com/utrack/gin-csrf v0.0.0-20190424104817-40fb8d2c8fca
+	github.com/stripe/stripe-go/v75 v75.3.0
 	go.mongodb.org/mongo-driver v1.11.6
 )
 
@@ -40,10 +40,10 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
+	github.com/mrredo/govaluate v0.0.0-20231022124647-836089234335 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sasha-s/go-csync v0.0.0-20210812194225-61421b77c44b // indirect
-	github.com/stripe/stripe-go/v75 v75.3.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect

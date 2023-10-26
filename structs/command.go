@@ -24,11 +24,33 @@ type Command struct {
 	Private     bool   `json:"private"`
 	Registered  bool   `json:"registered"`
 }
-
+type Option struct {
+	Type        int    `json:"type"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Required    bool   `json:"required"`
+	//Choices []Choice
+	MinLength int `json:"min_length"`
+	MaxLength int `json:"max_length"`
+}
 type CommandObject struct {
 	Commands map[string]Command `json:"commands"`
 	GuildID  string             `json:"id"`
 }
+
+const (
+	OptionSubCommand = iota + 1
+	OptionSubCommandGroup
+	OptionString
+	OptionInteger
+	OptionBoolean
+	OptionUser
+	OptionChannel
+	OptionRole
+	OptionMentionable
+	OptionNumber
+	OptionAttachment
+)
 
 func NewCommand(name string, description string, response string) *Command {
 	return &Command{Name: name, Description: description, Response: response}
