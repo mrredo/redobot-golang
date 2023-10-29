@@ -53,9 +53,11 @@ const (
 	NewPlaceholders = ""
 	CommandOption   = ""
 	NewUser         = "user"
+	NewServer       = "server"
+	NewMember       = "member"
+	NewCommandData  = "command"
 	//NewUserMention         = "usermention"
 	//NewUserID              = "userid"
-	NewServer = "server"
 	//NewServerOwner         = "serverowner"
 	//NewServerOwnerMention  = "serverownermention"
 	//NewJoinDate            = "joindate"
@@ -73,7 +75,7 @@ var (
 func TestThings() {
 
 	stringss := []string{
-		"{cmd}} {cmd1.go} {cmd2}",
+		"{cmd} {cmd1.go} {cmd2}",
 	}
 	place := map[string]any{
 		"cmd": "e",
@@ -92,10 +94,10 @@ func FindReplacePlaceholders(text string, parameters map[string]any) string {
 	for _, v := range matches {
 		expr, _ := govaluate.NewEvaluableExpression(v[1:len(v)-1], false)
 		res, err := expr.Evaluate(parameters)
-		if err != nil {
-			fmt.Println(err.Error())
+		if err == nil {
+			text = strings.ReplaceAll(text, v, fmt.Sprintf("%v", res))
 		}
-		text = strings.ReplaceAll(text, v, fmt.Sprintf("%v", res))
+
 	}
 	return text
 }

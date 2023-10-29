@@ -101,7 +101,7 @@ export default function GuildCommands() {
                     } else if (!(1 <= description.value.length  && description.value.length  <= 100)) {
                         Swal.showValidationMessage("Description must be from 1-100 characters")
                     }
-                    return {name: name.value, description: description.value, response: `{"content": "This is the default message of this command {commandname}"}` } as Command
+                    return {name: name.value, description: description.value, response: `{"content": "This is the default message of this command {command.name}"}` } as Command
                     },
             }).then((res) => {
                 if(!res.isConfirmed) return

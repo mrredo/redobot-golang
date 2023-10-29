@@ -90,7 +90,7 @@ func Start(client bot.Client) *gin.Engine {
 		}
 		c.Next()
 	})
-	api.GET("/placeholders/:type", placeholders.GetPlaceholders)
+	api.GET("/placeholders/:type", placeholders.NewPlaceholders)
 	api.POST("/guilds/:id/commands/reregister", commands.ReRegisterCommands)
 	api.POST("/guilds/:id/commands", commands.RegisterCommand)
 	api.GET("/guilds/:id/commands/:command", commands.GetSingleCommand)

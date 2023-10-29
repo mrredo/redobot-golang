@@ -38,7 +38,11 @@ func Start() bot.Client {
 			cache.WithCaches(cache.FlagGuilds, cache.FlagChannels, cache.FlagMembers),
 		),
 		bot.WithEventListenerFunc(func(e *events.Ready) {
-
+			//id, _ := snowflake.Parse("706536914408177726")
+			//gid, _ := snowflake.Parse("1010900109023789119")
+			//member, _ := e.Client().Rest().GetMember(gid, id)
+			//guild, _ := e.Client().Rest().GetGuild(gid, true)
+			//fmt.Println(cons.GenerateUserMap(&member.User), "\n", cons.GenerateMemberMap(member), "\n", cons.GenerateServerMap(guild))
 		}),
 		bot.WithEventListenerFunc(commands.HandleCustomCommands),
 		bot.WithEventListenerFunc(event.UserJoin),

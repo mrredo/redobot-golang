@@ -48,7 +48,8 @@ func HandleCustomCommands(e *events.ApplicationCommandInteractionCreate) {
 	} else {
 		Placeholders[cons.UserIcon] = *e.User().AvatarURL()
 	}
-	command.Response = cons.FindPlaceHoldersAndReplace(command.Response, Placeholders)
+	command.Response = cons.FindReplacePlaceholders(command.Response, cons.GeneratePlaceholderCommand(e))
+	//command.Response = cons.FindPlaceHoldersAndReplace(command.Response, Placeholders)
 	if err := json.Unmarshal([]byte(command.Response), &creator); err != nil {
 
 		e.CreateMessage(discord.NewMessageCreateBuilder().SetContent("Invalid json data set for custom command messages, visit dashboard to fix.").SetEphemeral(true).Build())
