@@ -29,13 +29,17 @@ func GenerateAPIUser() (data map[string]any) {
 	if err := json.Unmarshal(b, &data); err != nil {
 		return map[string]any{}
 	}
+	data["avatar_url"] = ""
+	data["banner_url"] = ""
 	return
 }
 func GenerateAPIMember() (member map[string]any) {
 	b, _ := json.Marshal(discord.Member{})
+
 	if err := json.Unmarshal(b, &member); err != nil {
 		return map[string]any{}
 	}
-
+	delete(member, "user")
+	member["avatar_url"] = ""
 	return
 }

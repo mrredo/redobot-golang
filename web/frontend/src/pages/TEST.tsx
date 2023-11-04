@@ -1,56 +1,117 @@
-import React, { Component, ChangeEvent } from 'react';
+import React, {useEffect, useState} from 'react';
+import {Accordion} from "react-bootstrap"
+function ColoredWordsEditor() {
+    const [data, setData] = useState({});
+    let [event, setEvent] = useState(0)
+    useEffect(() => {
 
-class ColoredWordsEditor extends Component {
-    constructor(props: {}) {
-        super(props);
-        this.state = {
-            content: [],
-        };
+        setData({
+            key1: {
+                hello: "eeee",
+                key: "beef",
+                jj: {
+                    eeee: 222,
+                },
+            },
+            key2: "e",
+            ffff: {
+                hello: {
+                    hello: {
+                        hello: "eeee",
+                        key: "beef",
+                        jj: {
+                            eeee: 222,
+                        },
+                    },
+                    key: "beef",
+                    jj: {
+                        eeee: 222,
+                    },
+                },
+                key: "beef",
+                jj: {
+                    eeee: 222,
+                },
+            },
+        });
+        // setData({
+        //     key3: {
+        //         ee: {
+        //             keyg: "eeeee",
+        //         },
+        //     },
+        //     key2: "3e"
+        // })
+    }, []);
+    let eventKey=0
+    function isObject(obj: any) {
+        return typeof obj === "object" && !Array.isArray(obj);
     }
 
-    handleContentChange = (e: ChangeEvent<HTMLDivElement>) => {
-        const content = e.target.textContent || '';
-        const coloredContent = this.colorWords(content);
-        this.setState({ content: coloredContent });
-    };
-
-    colorWords = (text: string) => {
-        // Split the text into words using a regular expression
-        const words = text.split(/\s+/).filter((word) => word.trim() !== '');
-
-        // Generate a random color for each word
-        const coloredWords = words.map((word, index) => {
-            const randomColor = this.getRandomColor();
-            return (
-                <span key={index} style={{ color: randomColor }}>
-          {word}{' '}
-        </span>
-            );
-        });
-
-        return coloredWords;
-    };
-
-    getRandomColor = () => {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    };
-
-    render() {
+    function repeatString(str: string, times: number): string {
+        if (times <= 0 || times === undefined) return ""
+        return new Array(times + 1).join(str);
+    }
+    function AccordionMaker(items: any) {
         return (
-            <div
-                contentEditable
-                onInput={this.handleContentChange}
-                style={{ border: '1px solid black', padding: '10px' }}
-            >
-                {(this.state as any  ).content}
-            </div>
+            <Accordion defaultActiveKey="0-0-0">
+                {items}
+            </Accordion>
+        )
+    }
+    function AccordionItemMaker(name: any, content: any, eventKey: string, withoutbody?: boolean) {
+        return (
+                <Accordion.Item eventKey={eventKey}>
+                    <Accordion.Header>{name}</Accordion.Header>
+                    {withoutbody? "" : <Accordion.Body>{content}</Accordion.Body>}
+                </Accordion.Item>
         );
     }
-}
+    function DetailsAndSummary(name: any, content: any, nestingLevel: number) {
+        nestingLevel = nestingLevel == 0 ? 0 : nestingLevel
+        let color = nestingLevel % 2 == 0? "border-white" : "border-red-600"
+        return (
+            <>
+                <details className={`border-2 ${color}`}>
+                    <summary>{name}</summary>
+                    {content}
+                </details>
+            </>
+        );
+    }
 
+    function Normaltype(key: any, value: any) {
+        return (
+                <div key={key}>
+                    {key}: {value}
+                </div>
+                );
+    }
+
+
+    function Load(ob: any): any[] {
+        const content: any = []
+        let keys = Object.keys(ob)
+        for (const num in keys) {
+            event += 1
+            even++
+            if (isObject(ob[keys[num]])) {
+                content.push(AccordionItemMaker(keys[num], Load(ob[keys[num]]), `${even}`))
+            } else {
+                content.push(AccordionItemMaker(keys[num], "", `${even}`, true))
+                // content.push(Normaltype(keys[num], ob[keys[num]]))
+            }
+        }
+        return content
+    }
+
+
+    return (
+        <div>
+            <button onClick={() => setData(data)}>reload</button>
+            {AccordionMaker(Load(data))}
+        </div>
+    );
+}
+let even = 1
 export default ColoredWordsEditor;

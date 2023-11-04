@@ -1,64 +1,33 @@
-import React, {useRef} from 'react';
-
+import React, {useEffect, useRef} from 'react';
+let regex = /\{([^{}]+)}/gm
+let NumRegex = /[0-9]+/gm
+let SymbolsRegex = /(\|\||&&|==|!=|>=|<=|\+|-|\*|\/|%|&|\||\^|<<|>>|!)/gm
 const SyntaxHighlight: React.FC = () => {
     const DivRef = useRef<HTMLDivElement>(null);
-    const MainRef = useRef<HTMLDivElement>(null);
+    const AreaRef = useRef<HTMLTextAreaElement>(null);
+    const onInput = () => {
+        let element = document.getElementById("input") as HTMLTextAreaElement
+        let text = element.value
+        let matches = text!.match(regex)
+        let newText = text
+        matches!.forEach((val, i) => {
 
-    const colorizeCode = (text: string): string => {
-        return text.replace(/\{\{(.*?)\}\}/g, '{{<span style="color: #0dcaf0">$1</span>}}');
-    };
+            newText = newText.replace(SymbolsRegex, `<span style="color: #001ef8">$1</span>`)
 
-    const OnInput = () => {
-        if (DivRef.current && DivRef.current.textContent) {
-            const NodePrevious = window.getSelection()?.focusNode
-
-            const caret = window.getSelection()?.getRangeAt(0);
-            const caretStart = caret?.startOffset || 0;
-            const caretEnd = caret?.endOffset || 0;
-
-            const savedCaretPosition = { start: caretStart, end: caretEnd };
-            console.log(savedCaretPosition)
-            const textContent = DivRef.current.textContent || '';
-            DivRef.current.innerHTML = colorizeCode(textContent);
-            const sel = window.getSelection();
-            sel?.removeAllRanges();
-            let node = DivRef.current!.firstChild as Node
-            let correctCaretPos = false
-            let offset = Math.min(savedCaretPosition.start, savedCaretPosition.end)
-            while(!correctCaretPos) {
-                let curl = node.textContent!.length
-                if(node.textContent!.length < offset) {
-                    node = node.nextSibling as Node
-                } else {
-                    correctCaretPos = true
-                    continue
-                }
-                offset -= curl
-            }
-
-            if (DivRef.current!.childNodes.length > 1) {
-                node = NodePrevious as Node
-            }
-            const newRange = document.createRange();
-            const textNode = node as Node
-
-            if (textNode.nodeType === Node.TEXT_NODE) {
-                newRange.setStart(textNode, Math.min(offset, textNode.textContent!.length));
-                newRange.setEnd(textNode, Math.min(offset, textNode.textContent!.length));
-            }
-
-            sel?.addRange(newRange);
-        }
-    };
-
+             newText = newText.replace(val, `<span style="color: #ff0000">$1</span>`)
+        })
+        DivRef.current!.innerHTML = newText
+    }
+    useEffect(() => {
+        onInput();
+    }, []);
     return (
-        <div ref={MainRef}>
+        <>
+            <textarea id={"input"} onInput={onInput} ref={AreaRef}/>
             <div
-                contentEditable={true}
-                onInput={OnInput}
                 ref={DivRef}
             />
-        </div>
+        </>
     );
 };
 

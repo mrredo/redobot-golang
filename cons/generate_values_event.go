@@ -8,7 +8,7 @@ func GeneratePlaceholderCommand(e *events.ApplicationCommandInteractionCreate) (
 	us := e.User()
 	end = map[string]any{
 		NewUser:        GenerateUserMap(&us),
-		NewMember:      GenerateMemberMap(e.Member()),
+		NewMember:      GenerateMemberMap(&e.Member().Member),
 		NewCommandData: GenerateCommandData(e.SlashCommandInteractionData()),
 	}
 	if g, ok := e.Guild(); ok {

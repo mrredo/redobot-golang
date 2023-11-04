@@ -10,13 +10,13 @@ let Swal = withReactContent(Swal1)
 export default function GuildCommand() {
     let {id, command} = useParams()
     let [cmd, setCommand] = useState({} as Command)
-    let [placeholder, setPlaceholder] = useState("")
+    let [placeholder, setPlaceholder] = useState({})
 
     let [loaded, setLoaded] = useState(false)
     useEffect(() => {
         function fetchPlaceholders() {
-            fetch('/api/placeholders/command', {credentials: "include"}).then(res => res.json()).then((data: string[]) => {
-                setPlaceholder(data.join(", "))
+            fetch('/api/placeholders/member,user,guild,command', {credentials: "include"}).then(res => res.json()).then((data: string[]) => {
+                setPlaceholder(data)
             })
 
         }
@@ -103,6 +103,11 @@ export default function GuildCommand() {
 
         })
     }
+
+    function parsePlaceholder() {
+        return (<>
+        </>)
+    }
     const handleDescChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         cmd.description = event.target.value
         setCommand(cmd)
@@ -133,8 +138,7 @@ export default function GuildCommand() {
                 Placeholders:
             </div>
             <div className=" flex justify-center items-center">
-
-                <span className={"text-lg "}>{placeholder}</span>
+                {/*<span className={"text-lg "}></span>*/}
 
                 </div>
             <div className=" flex justify-center items-center">

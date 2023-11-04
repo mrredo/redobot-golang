@@ -27,7 +27,7 @@ func GenerateUserMap(user *discord.User) (userMap map[string]any) {
 
 	return userMap
 }
-func GenerateMemberMap[T *discord.Member | *discord.ResolvedMember](member T) (userMap map[string]any) {
+func GenerateMemberMap(member *discord.Member) (userMap map[string]any) {
 	b, err := json.Marshal(member)
 	if err != nil {
 		return map[string]any{}
@@ -37,6 +37,11 @@ func GenerateMemberMap[T *discord.Member | *discord.ResolvedMember](member T) (u
 		return map[string]any{}
 	}
 	delete(userMap, "user")
+	if member.AvatarURL() == nil {
+		userMap["avatar_url"] = def.ServerIcon
+	} else {
+		userMap["avatar_url"] = *member.AvatarURL()
+	}
 	return userMap
 }
 func GenerateServerMap(server *discord.Guild) (serverMap map[string]any) {
